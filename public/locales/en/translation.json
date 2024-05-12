@@ -1,0 +1,167 @@
+{
+  "features": {
+    "title": "Essential Features",
+    "subtitle": "Built with a focus on speed, privacy, and quality.",
+    "fast_processing": {
+      "title": "Fast Processing",
+      "description": "Instant conversion in your browser, no server uploads"
+    },
+    "privacy": {
+      "title": "Total Privacy",
+      "description": "Your images never leave your device, ensuring complete privacy"
+    },
+    "resolutions": {
+      "title": "Multiple Resolutions",
+      "description": "Automatically generates 16x16, 32x32, 48x48, and 64x64 pixels"
+    },
+    "download": {
+      "title": "Instant Download",
+      "description": "Download your ready-to-use ICO file in seconds"
+    }
+  },
+  "about": {
+    "title": "About IcoForge",
+    "description": "IcoForge is an open-source tool, created with passion for developers and designers looking for a fast and reliable way to convert images to the .ico format.",
+    "free": {
+      "title": "100% Free",
+      "description": "No limits, no sign-up, no hidden catches."
+    },
+    "open_source": {
+      "title": "Open Source",
+      "description": "Transparent and auditable by anyone."
+    },
+    "privacy": {
+      "title": "Private by Design",
+      "description": "Local processing. Your data never leaves your device."
+    }
+  },
+  "nav": {
+    "features": "Features",
+    "about": "About",
+    "github": "GitHub",
+    "aria_label": "Navigate to {{name}} section",
+    "github_aria_label": "View source code on GitHub"
+  },
+  "footer": {
+    "copyright": "© {{year}} Augusto Cesar Perin | Abstratus Labs",
+    "source_code": "Source code available on GitHub"
+  },
+  "hero": {
+    "title": "IcoForge",
+    "description": "Transform any image into a high-quality .ico favicon instantly. Drag, drop, and you're done.",
+    "features": {
+      "free": "Unlimited",
+      "private": "Private & Secure",
+      "resolutions": "All Resolutions"
+    },
+    "upload": {
+      "title": "Drag your image here",
+      "subtitle": "or click to select",
+      "constraints": "PNG, JPG or JPEG • Maximum 50MB",
+      "aria_label": "Select image file"
+    },
+    "processing": {
+      "success_title": "Processing complete!",
+      "success_subtitle": "Your icons are ready for download",
+      "retry_button": "Retry",
+      "reset_button": "Convert another image",
+      "retrying_step": "Retrying..."
+    },
+    "errors": {
+      "validation": {
+        "invalid_file": "Invalid file.",
+        "unexpected": "Unexpected error during validation. Please try again.",
+        "file_type": "Unsupported format. Please use: {{allowedTypes}}",
+        "file_size": "File too large ({{currentSize}}MB). Maximum allowed: {{maxSize}}MB",
+        "dimensions_too_small": "Image too small ({{currentWidth}}×{{currentHeight}}px). Minimum: {{minWidth}}×{{minHeight}}px",
+        "dimensions_too_large": "Image too large ({{currentWidth}}×{{currentHeight}}px). Maximum: {{maxWidth}}×{{maxHeight}}px",
+        "corrupted": "Corrupted or invalid file format. Please try another image.",
+        "network": "Network error. Please check your connection and try again.",
+        "unknown": "Unexpected error. Please try again or use another file.",
+        "rate_limit": "Too many uploads in a short time. Please wait a moment.",
+        "processing_timeout": "Processing took too long. Please try with a smaller image."
+      },
+      "suggestions": {
+        "file_type": "Try converting your image to PNG or JPG.",
+        "file_size": "Resize or compress the image to reduce its size.",
+        "dimensions_too_small": "Use an image with a higher resolution.",
+        "dimensions_too_large": "Resize the image to be smaller than 4096x4096px.",
+        "corrupted": "The file seems to be damaged. Try exporting it again.",
+        "generic": "Try reloading the page or using a different file."
+      },
+      "processing": {
+        "generic_title": "An error occurred",
+        "generic_suggestion": "It seems something went wrong. Please try again."
+      }
+    },
+    "warnings": {
+      "title": "Warnings"
+    }
+  },
+  "preview": {
+    "title": "Conversion Complete!",
+    "subtitle": "Your favicon is ready to use",
+    "processing_details": "Processed in high quality • {{count}} resolutions",
+    "download": {
+      "ico_button": "ICO only ({{size}})",
+      "zip_button": "Download Full Package ({{size}})",
+      "ico_button_simple": "Download ICO ({{size}})",
+      "toast": {
+        "ico_started": "ICO download started!",
+        "zip_started": "ZIP package download started!",
+        "error_title": "Download Error",
+        "error_description": "Could not download the file."
+      }
+    },
+    "tabs": {
+      "preview": "Interactive Preview",
+      "details": "Technical Details"
+    },
+    "preview_modes": {
+      "split": "Comparison",
+      "light": "Light Background",
+      "dark": "Dark Background"
+    },
+    "grid": {
+      "title": "Icon Preview",
+      "subtitle": "Click any icon to see usage details"
+    },
+    "details": {
+      "title": "Selected Resolution Details",
+      "no_selection": "Select an icon to see details",
+      "size": "Size",
+      "usage": "Common Usage",
+      "html_code": "HTML Code",
+      "copy_button": "Copy",
+      "copied_toast": "Code copied to clipboard!",
+      "tech_info": {
+        "title": "Technical Information",
+        "original_name": "Original Name",
+        "original_size": "Original Size",
+        "original_dimensions": "Original Dimensions",
+        "generated_icons": "Generated Icons"
+      }
+    },
+    "usage": {
+      "16": { "name": "Favicon", "description": "Browser tab" },
+      "32": { "name": "Bookmarks", "description": "Bookmarks bar" },
+      "48": { "name": "Desktop", "description": "Desktop shortcut" },
+      "64": { "name": "Applications", "description": "App list" },
+      "128": { "name": "Installation", "description": "Installer screen" },
+      "256": { "name": "High Resolution", "description": "Retina displays" },
+      "default": { "name": "Custom", "description": "Custom usage" }
+    }
+  },
+  "settings": {
+    "title": "Advanced Options",
+    "filename_label": "Base filename",
+    "quality_label": "Image quality",
+    "resolutions_label": "ICO resolutions (select desired)",
+    "package_label": "Full Favicon Package",
+    "package_option": {
+      "generate": "Generate full package (with `manifest` and `apple-touch-icon`)",
+      "include_png": "Include individual PNG files in .zip",
+      "include_webp": "Include WebP format (experimental)"
+    }
+  }
+} 
