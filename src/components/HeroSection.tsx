@@ -1,0 +1,335 @@
+import { useState } from 'react';
+import { Upload, X, AlertTriangle, Infinity, ShieldCheck, Diamond, Loader2, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import ProcessingProgress from './ProcessingProgress';
+import { validateImageFile, getErrorSuggestion } from '@/utils/fileValidation';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+
+interface HeroSectionProps {
+  onImageUpload: (file: File) => void;
+  isProcessing: boolean;
+  onReset: () => void;
+  hasProcessedImage: boolean;
+  progress?: number;
+  currentStep?: string;
+  processingError?: string;
+}
+
+const HeroSection = ({ 
+  onImageUpload, 
+  isProcessing, 
+  onReset, 
+  hasProcessedImage,
+  progress = 0,
+  currentStep = '',
+  processingError
+}: HeroSectionProps) => {
+  const { t } = useTranslation();
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [validationError, setValidationError] = useState<string>('');
+  const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
+  const [errorType, setErrorType] = useState<string>('');
+  const [isRetryable, setIsRetryable] = useState<boolean>(false);
+  const [isRetrying, setIsRetrying] = useState<boolean>(false);
+  const [lastFile, setLastFile] = useState<File | null>(null);
+
+  const validateAndUpload = async (file: File, isRetry = false) => {
+    if (!isRetry) {
+      setValidationError('');
+      setValidationWarnings([]);
+      setErrorType('');
+      setIsRetryable(false);
+      setLastFile(file);
+    }
+
+    if (isRetry) {
+      setIsRetrying(true);
+    }
+
+    try {
+      const validation = await validateImageFile(file, {
+        enableRetry: true,
+        maxRetries: 3,
+        t,
+      });
+    
+      if (!validation.isValid) {
+        setValidationError(validation.error || t('hero.errors.validation.invalid_file'));
+        setErrorType('UNKNOWN');
+        setIsRetryable(true);
+        return;
+      }
+
+      if (validation.warnings) {
+        setValidationWarnings(validation.warnings);
+      }
+
+      setValidationError('');
+      setErrorType('');
+      setIsRetryable(false);
+      
+      onImageUpload(file);
+    } catch (error) {
+      console.error('Validation error:', error);
+      setValidationError(t('hero.errors.validation.unexpected'));
+      setErrorType('UNKNOWN');
+      setIsRetryable(true);
+    } finally {
+      setIsRetrying(false);
+    }
+  };
+
+  const handleRetry = () => {
+    if (lastFile && isRetryable) {
+      validateAndUpload(lastFile, true);
+    }
+  };
+
+  const handleDragEvents = (e: React.DragEvent, isOver: boolean) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isProcessing && !isRetrying) setIsDragOver(isOver);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    handleDragEvents(e, false);
+    if (isProcessing || isRetrying) return;
+    
+    const imageFile = e.dataTransfer.files?.[0];
+    if (imageFile) {
+      validateAndUpload(imageFile);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      validateAndUpload(file);
+    }
+    e.target.value = '';
+  };
+
+  const keyFeatures = [
+    { label: t('hero.features.free'), icon: Infinity },
+    { label: t('hero.features.private'), icon: ShieldCheck },
+    { label: t('hero.features.resolutions'), icon: Diamond }
+  ];
+
+  const titleContainerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.03 }
+    }
+  };
+
+  const letterVariant = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 }
+  };
+
+  const titleText = t('hero.title');
+  const forgeIndex = titleText.indexOf('Forge');
+
+  return (
+    <section className="relative flex items-center justify-center py-6 sm:py-8 md:py-12 lg:py-16 px-4 overflow-hidden min-h-[60vh] sm:min-h-[65vh]">
+      <div className="container mx-auto max-w-4xl">
+        <div 
+          className="text-center space-y-6 sm:space-y-8 md:space-y-10"
+        >
+          <div 
+            className="space-y-4 sm:space-y-6"
+          >
+            <motion.h1 
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tighter text-white leading-tight"
+              variants={titleContainerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {titleText.split('').map((char, index) => (
+                <motion.span 
+                  key={`${char}-${index}`}
+                  variants={letterVariant}
+                  className={index >= forgeIndex ? 'text-primary' : ''}
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </motion.span>
+              ))}
+            </motion.h1>
+            
+            <p className="text-base sm:text-lg text-foreground/80 max-w-2xl mx-auto font-medium bg-gradient-to-r from-foreground/95 via-foreground/85 to-foreground/80 bg-clip-text text-transparent">
+              {t('hero.description')}
+            </p>
+            
+            <div 
+              className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 pt-2 sm:pt-4"
+            >
+              {keyFeatures.map((feature, index) => (
+                <div 
+                  key={feature.label} 
+                  className="feature-pill text-xs sm:text-sm"
+                >
+                  <feature.icon className="h-3 w-3 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
+                  <span className="font-medium whitespace-nowrap">{feature.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {(isProcessing || processingError) && (
+            <div className="max-w-2xl mx-auto">
+              <ProcessingProgress 
+                isProcessing={isProcessing}
+                progress={progress}
+                currentStep={currentStep}
+                error={processingError}
+              />
+            </div>
+          )}
+
+          <div
+            className="w-full max-w-2xl mx-auto bg-gradient-to-br from-orange-500/40 via-transparent to-transparent p-[1px] rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.1)] hover:shadow-[0_0_40px_-10px_rgba(249,115,22,0.4)] backdrop-blur-sm transition-all duration-300 ease-in-out"
+          >
+            <div
+              className={cn(
+                "bg-black/50 rounded-[11px] h-full w-full p-6 sm:p-8 md:p-10 cursor-pointer border-2 border-transparent",
+                "transition-all duration-300",
+                isDragOver && 'scale-[1.02] border-dashed border-primary/40 bg-primary/10'
+              )}
+              onDragEnter={(e) => handleDragEvents(e, true)}
+              onDragOver={(e) => handleDragEvents(e, true)}
+              onDragLeave={(e) => handleDragEvents(e, false)}
+              onDrop={handleDrop}
+              onClick={() => !hasProcessedImage && document.getElementById('file-input')?.click()}
+            >
+              <input
+                id="file-input"
+                type="file"
+                accept="image/png,image/jpeg,image/jpg"
+                onChange={handleFileSelect}
+                className="hidden"
+                disabled={isProcessing || hasProcessedImage || isRetrying}
+                aria-label={t('hero.upload.aria_label')}
+              />
+              <AnimatePresence mode="wait">
+                {!hasProcessedImage && !isProcessing && (
+                  <motion.div
+                    key="upload-content"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4 sm:space-y-6"
+                  >
+                    <motion.div
+                      className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-orange-500/10 flex items-center justify-center"
+                      animate={{ scale: isDragOver ? 1.1 : 1 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 10 }}
+                    >
+                      <Upload className="w-8 h-8 sm:w-10 sm:h-10 text-orange-500" />
+                    </motion.div>
+                    <div className="space-y-2">
+                      <h3 className="text-xl sm:text-2xl font-bold text-foreground">
+                        {t('hero.upload.title')}
+                      </h3>
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        {t('hero.upload.subtitle')}
+                      </p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        {t('hero.upload.constraints')}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+
+                {(isProcessing || isRetrying) && (
+                  <ProcessingProgress 
+                    isProcessing={isProcessing || isRetrying}
+                    progress={isRetrying ? 0 : progress}
+                    currentStep={isRetrying ? t('hero.processing.retrying_step') : currentStep}
+                    error={processingError}
+                  />
+                )}
+
+                {hasProcessedImage && !isProcessing && (
+                  <motion.div
+                    key="success-content"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4 text-center"
+                  >
+                    <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-orange-500/10 flex items-center justify-center">
+                      <Upload className="w-8 h-8 sm:w-10 sm:h-10 text-orange-500" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-xl sm:text-2xl font-bold text-foreground">
+                        {t('hero.processing.success_title')}
+                      </h3>
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        {t('hero.processing.success_subtitle')}
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={onReset}
+                      variant="outline"
+                      size="sm"
+                      className="mt-4"
+                    >
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      {t('hero.processing.reset_button')}
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {validationError && !isProcessing && !isRetrying && (
+            <div
+              className="mt-4 p-4 bg-red-900/20 border border-red-500/30 rounded-lg text-red-400 max-w-2xl mx-auto"
+            >
+              <div className="flex items-center">
+                <AlertTriangle className="h-5 w-5 mr-3 flex-shrink-0" />
+                <div className="text-left">
+                  <p className="font-semibold">{t('hero.errors.processing.generic_title')}</p>
+                  <p className="text-sm">{validationError}</p>
+                  <p className="text-sm mt-1 opacity-80">{getErrorSuggestion(errorType, t)}</p>
+                </div>
+              </div>
+              {isRetryable && (
+                <Button onClick={handleRetry} variant="secondary" size="sm" className="mt-3 w-full sm:w-auto">
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  {t('hero.processing.retry_button')}
+                </Button>
+              )}
+            </div>
+          )}
+
+          {validationWarnings.length > 0 && !validationError && !isProcessing && !isRetrying && (
+            <div
+              className="mt-4 p-4 bg-yellow-900/20 border border-yellow-500/30 rounded-lg text-yellow-300 max-w-2xl mx-auto"
+            >
+              <div className="flex items-start">
+                <AlertTriangle className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
+                <div className="text-left">
+                  <p className="font-semibold">{t('hero.warnings.title')}:</p>
+                  <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                    {validationWarnings.map((warning, index) => (
+                      <li key={index}>{warning}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default HeroSection;
