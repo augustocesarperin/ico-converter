@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useId } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 const AnimatedBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -13,6 +13,7 @@ const AnimatedBackground: React.FC = () => {
     let particles: Particle[];
     let animationFrameId: number;
     let grid: { [key: string]: Particle[] };
+    let lastTime = performance.now();
     const cellSize = 120;
 
     const resizeCanvas = () => {
@@ -34,20 +35,20 @@ const AnimatedBackground: React.FC = () => {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         this.size = Math.random() * 2 + 1;
-        this.speedX = Math.random() * 1.0 - 0.5;
-        this.speedY = Math.random() * 1.0 - 0.5;
+        this.speedX = (Math.random() - 0.5) * 50;
+        this.speedY = (Math.random() - 0.5) * 50;
       }
 
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
+      update(dt: number) {
+        this.x += this.speedX * dt;
+        this.y += this.speedY * dt;
 
         if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
         if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
       }
 
       draw() {
-        ctx!.fillStyle = 'hsla(24.6, 95%, 53.1%, 0.7)';
+        ctx!.fillStyle = 'hsla(25, 70%, 45%, 0.4)';
         ctx!.beginPath();
         ctx!.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx!.fill();
@@ -58,7 +59,7 @@ const AnimatedBackground: React.FC = () => {
       resizeCanvas();
       particles = [];
       particleIdCounter = 0;
-      const numberOfParticles = (canvas.width * canvas.height) / 9000;
+      const numberOfParticles = (canvas.width * canvas.height) / 12000;
       for (let i = 0; i < numberOfParticles; i++) {
         particles.push(new Particle());
       }
@@ -91,14 +92,14 @@ const AnimatedBackground: React.FC = () => {
               for (const other of grid[key]) {
                 if (particle.id >= other.id) continue;
 
-                const distance = Math.sqrt(
-                  Math.pow(particle.x - other.x, 2) +
-                  Math.pow(particle.y - other.y, 2)
-                );
+                const dx = particle.x - other.x;
+                const dy = particle.y - other.y;
+                const distanceSq = dx * dx + dy * dy;
 
-                if (distance < 120) {
+                if (distanceSq < 14400) { // 120 * 120
+                  const distance = Math.sqrt(distanceSq);
                   opacityValue = 1 - (distance / 120);
-                  ctx!.strokeStyle = `hsla(24.6, 95%, 53.1%, ${opacityValue * 0.8})`;
+                  ctx!.strokeStyle = `hsla(25, 70%, 45%, ${opacityValue * 0.5})`;
                   ctx!.lineWidth = 1;
                   ctx!.beginPath();
                   ctx!.moveTo(particle.x, particle.y);
@@ -112,7 +113,11 @@ const AnimatedBackground: React.FC = () => {
       }
     };
 
-    const animate = () => {
+    const animate = (timestamp: number) => {
+      const dt = (timestamp - lastTime) / 1000;
+      lastTime = timestamp;
+      const effectiveDt = Math.min(dt, 0.1);
+
       const gradient = ctx!.createRadialGradient(
         canvas.width / 2,
         canvas.height / 2,
@@ -130,7 +135,7 @@ const AnimatedBackground: React.FC = () => {
       updateGrid();
 
       particles.forEach(p => {
-        p.update();
+        p.update(effectiveDt);
         p.draw();
       });
       connect();
@@ -138,7 +143,7 @@ const AnimatedBackground: React.FC = () => {
     };
     
     init();
-    animate();
+    requestAnimationFrame(animate);
 
     window.addEventListener('resize', init);
 

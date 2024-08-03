@@ -9,7 +9,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-6 text-center text-muted-foreground">
         <div className="flex flex-col items-center justify-center space-y-2">
           <p className="text-sm">
-            {t('footer.copyright', { year: 2024 })}
+            {t('footer.copyright')}
           </p>
           <a
             href="https://github.com/GutoCode/IcoForge"

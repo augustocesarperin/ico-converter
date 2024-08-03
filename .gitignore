@@ -7,20 +7,18 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Build output
 dist
 dist-ssr
 dist-types
 
-# Dependencies
+
 node_modules/
 
-# Environment variables
+
 .env
 .env.*
 !.env.example
 
-# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea/
@@ -31,12 +29,10 @@ node_modules/
 *.sln
 *.sw?
 
-# Caches and temporary files
 .npm
 .eslintcache
 .vite-cache
 .yarn-cache
 
-# Test coverage
 coverage
 .nyc_output
