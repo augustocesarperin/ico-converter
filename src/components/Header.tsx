@@ -45,7 +45,7 @@ const Header = () => {
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
             </div>
-            <span className="text-xl font-bold text-white">IcoForge</span>
+            <span className="text-xl font-bold text-white">IcoSmith</span>
           </a>
           
           <nav className="hidden md:flex items-center space-x-1">

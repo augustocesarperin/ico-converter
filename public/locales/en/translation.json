@@ -20,8 +20,8 @@
     }
   },
   "about": {
-    "title": "About IcoForge",
-    "description": "IcoForge is an open-source tool, created with passion for developers and designers looking for a fast and reliable way to convert images to the .ico format.",
+    "title": "About IcoSmith",
+    "description": "IcoSmith is an open-source tool, created with passion for developers and designers looking for a fast and reliable way to convert images to the .ico format.",
     "free": {
       "title": "100% Free",
       "description": "No limits, no sign-up, no hidden catches."
@@ -47,8 +47,8 @@
     "source_code": "Source code available on GitHub"
   },
   "hero": {
-    "title": "IcoForge",
-    "description": "Transform any image into a high-quality .ico favicon instantly. Drag, drop, and you're done.",
+    "title": "IcoSmith",
+    "description": "Convert PNG or JPG to .ICO in your browser — no uploads, all common sizes, ready in seconds.",
     "features": {
       "free": "Unlimited",
       "private": "Private & Secure",
