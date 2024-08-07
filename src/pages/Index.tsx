@@ -3,8 +3,9 @@ import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import AboutSection from '@/components/AboutSection';
-import PreviewSection from '@/components/PreviewSection';
-import CodeGenerator from '@/components/CodeGenerator';
+import { Suspense, lazy } from 'react';
+const PreviewSection = lazy(() => import('@/components/PreviewSection'));
+const CodeGenerator = lazy(() => import('@/components/CodeGenerator'));
 import ConversionSettings, { ConversionConfig } from '@/components/ConversionSettings';
 import Footer from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
@@ -183,10 +184,12 @@ const Index = () => {
                   className="container mx-auto px-4 py-8 space-y-8"
                   ref={resultsRef}
                 >
-                  <PreviewSection processedImage={processedImage} />
-                  {processedImage.faviconPackage && (
-                    <CodeGenerator faviconPackage={processedImage.faviconPackage} />
-                  )}
+                  <Suspense fallback={<div className="text-center text-sm text-muted-foreground">Loading preview…</div>}>
+                    <PreviewSection processedImage={processedImage} />
+                    {processedImage.faviconPackage && (
+                      <CodeGenerator faviconPackage={processedImage.faviconPackage} />
+                    )}
+                  </Suspense>
                 </motion.div>
               )}
             </AnimatePresence>

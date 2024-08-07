@@ -7,6 +7,7 @@ import ProcessingProgress from './ProcessingProgress';
 import { validateImageFile, getErrorSuggestion } from '@/utils/fileValidation';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 interface HeroSectionProps {
   onImageUpload: (file: File) => void;
@@ -35,6 +36,7 @@ const HeroSection = ({
   const [isRetryable, setIsRetryable] = useState<boolean>(false);
   const [isRetrying, setIsRetrying] = useState<boolean>(false);
   const [lastFile, setLastFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const validateAndUpload = async (file: File, isRetry = false) => {
     if (!isRetry) {
@@ -43,6 +45,11 @@ const HeroSection = ({
       setErrorType('');
       setIsRetryable(false);
       setLastFile(file);
+      try {
+        const url = URL.createObjectURL(file);
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(url);
+      } catch {}
     }
 
     if (isRetry) {
@@ -81,6 +88,12 @@ const HeroSection = ({
       setIsRetrying(false);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   const handleRetry = () => {
     if (lastFile && isRetryable) {
@@ -132,7 +145,8 @@ const HeroSection = ({
   };
 
   const titleText = t('hero.title');
-  const forgeIndex = titleText.indexOf('Forge');
+  const smithIndex = titleText.indexOf('Smith');
+  const sizeChips = [16, 32, 48, 64, 128, 256];
 
   return (
     <section className="relative flex items-center justify-center py-6 sm:py-8 md:py-12 lg:py-16 px-4 overflow-hidden min-h-[60vh] sm:min-h-[65vh]">
@@ -153,7 +167,7 @@ const HeroSection = ({
                 <motion.span 
                   key={`${char}-${index}`}
                   variants={letterVariant}
-                  className={index >= forgeIndex ? 'text-primary' : ''}
+                  className={index >= smithIndex ? 'text-primary' : ''}
                 >
                   {char === ' ' ? '\u00A0' : char}
                 </motion.span>
@@ -199,11 +213,20 @@ const HeroSection = ({
                 "transition-all duration-300",
                 isDragOver && 'scale-[1.02] border-dashed border-primary/40 bg-primary/10'
               )}
+              role="region"
+              aria-label={t('hero.upload.title')}
+              tabIndex={0}
               onDragEnter={(e) => handleDragEvents(e, true)}
               onDragOver={(e) => handleDragEvents(e, true)}
               onDragLeave={(e) => handleDragEvents(e, false)}
               onDrop={handleDrop}
               onClick={() => !hasProcessedImage && document.getElementById('file-input')?.click()}
+              onKeyDown={(e) => {
+                if ((e.key === 'Enter' || e.key === ' ') && !hasProcessedImage) {
+                  e.preventDefault();
+                  document.getElementById('file-input')?.click();
+                }
+              }}
             >
               <input
                 id="file-input"
@@ -241,6 +264,23 @@ const HeroSection = ({
                       <p className="text-xs sm:text-sm text-muted-foreground">
                         {t('hero.upload.constraints')}
                       </p>
+                    </div>
+
+                    {previewUrl && (
+                      <div className="mx-auto max-w-[220px]">
+                        <div className="aspect-square rounded-lg overflow-hidden border border-white/10 bg-checkerboard">
+                          <img src={previewUrl} alt="Preview" className="w-full h-full object-contain" />
+                        </div>
+                        <p className="mt-2 text-xs text-muted-foreground">Pré-visualização</p>
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap justify-center gap-2 pt-2" aria-label="ICO sizes">
+                      {sizeChips.map((s) => (
+                        <span key={s} className="px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-xs text-foreground/80">
+                          {s}×{s}
+                        </span>
+                      ))}
                     </div>
                   </motion.div>
                 )}

@@ -26,12 +26,19 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 export function ThemeProvider({
   children,
   defaultTheme = 'system',
-  storageKey = 'icoforge-ui-theme',
+  storageKey = 'icosmith-ui-theme',
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
+  const [theme, setTheme] = useState<Theme>(() => {
+    const current = localStorage.getItem(storageKey) as Theme | null;
+    if (current) return current;
+    const legacy = localStorage.getItem('icoforge-ui-theme') as Theme | null;
+    if (legacy) {
+      localStorage.setItem(storageKey, legacy);
+      return legacy;
+    }
+    return defaultTheme;
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;

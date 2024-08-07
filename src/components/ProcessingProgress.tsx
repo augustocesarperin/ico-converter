@@ -20,6 +20,8 @@ const ProcessingProgress = ({ isProcessing, progress, currentStep, error }: Proc
         exit={{ opacity: 0, y: -10, scale: 0.95 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
         className="space-y-3 p-4 sm:p-6 bg-card/60 backdrop-blur-xl rounded-lg border border-primary/10 shadow-lg"
+        aria-live="polite"
+        role="status"
       >
         <div className="flex items-center space-x-3">
           <div className="flex-shrink-0">
