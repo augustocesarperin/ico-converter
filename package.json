@@ -51,7 +51,6 @@
     "i18next": "^25.3.0",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",
-    "icojs": "^0.19.5",
     "input-otp": "^1.2.4",
     "jszip": "^3.10.1",
     "lucide-react": "^0.462.0",
@@ -72,6 +71,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@fontsource/inter": "^5.2.6",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",

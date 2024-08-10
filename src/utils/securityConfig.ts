@@ -1,5 +1,4 @@
-// Security Configuration for IcoForge
-// Centralized security settings to prevent DoS attacks and ensure safe operation
+// Security Configuration for IcoSmith
 
 // Environment detection
 const isDevelopment = (): boolean => {

@@ -1,5 +1,4 @@
 import { ConversionConfig } from '@/components/ConversionSettings';
-import JSZip from 'jszip';
 
 export interface FaviconPackage {
   files: { name: string; blob: Blob; type: string }[];
@@ -55,14 +54,11 @@ export const generateFaviconPackage = async (
     }
   }
 
-  // Generate manifest
-  const manifest = generateManifest(filename);
-  files.push({ name: 'site.webmanifest', blob: new Blob([manifest], { type: 'application/json' }), type: 'application/json' });
-
   // Generate HTML code
   const htmlCode = generateHTMLCode(filename);
 
   // Create ZIP file
+  const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
   files.forEach(file => {
     zip.file(file.name, file.blob);
@@ -75,32 +71,10 @@ export const generateFaviconPackage = async (
 const generateHTMLCode = (filename: string): string => {
   const lines = [
     `<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">`,
+    `<link rel="icon" href="/favicon.ico" sizes="any">`,
     `<link rel="icon" type="image/png" sizes="32x32" href="/${filename}-32x32.png">`,
-    `<link rel="icon" type="image/png" sizes="16x16" href="/${filename}-16x16.png">`,
-    `<link rel="manifest" href="/site.webmanifest">`,
+    `<link rel="icon" type="image/png" sizes="16x16" href="/${filename}-16x16.png">`
   ];
   return lines.join('\n');
 };
 
-const generateManifest = (filename: string): string => {
-  const manifest = {
-    name: "App Name",
-    short_name: "App",
-    icons: [
-      {
-        src: `/android-chrome-192x192.png`,
-        sizes: "192x192",
-        type: "image/png"
-      },
-      {
-        src: `/android-chrome-512x512.png`,
-        sizes: "512x512",
-        type: "image/png"
-      }
-    ],
-    theme_color: "#ffffff",
-    background_color: "#ffffff",
-    display: "standalone"
-  };
-  return JSON.stringify(manifest, null, 2);
-};
