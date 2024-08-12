@@ -22,7 +22,7 @@ type ValidationConfig = Omit<FileValidationOptions, 't'>;
 
 const DEFAULT_OPTIONS: Required<ValidationConfig> = {
   maxSizeInMB: 50, 
-  allowedTypes: ['image/png', 'image/jpeg', 'image/jpg'],
+  allowedTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'],
   minDimensions: { width: 16, height: 16 },
   maxDimensions: { width: 4096, height: 4096 }, 
   enableRetry: true,
@@ -158,21 +158,23 @@ export const validateImageFile = async (
       };
     }
     
-    let dimensions: { width: number; height: number };
-    try {
-      dimensions = await getImageDimensionsSecure(file, opts.processingTimeout);
-    } catch (error: any) {
-      const errorKey = error.message === 'PROCESSING_TIMEOUT' ? 'processing_timeout' : 'corrupted';
-      const fallbackError = error.message === 'PROCESSING_TIMEOUT' ? ERROR_MESSAGES.PROCESSING_TIMEOUT : ERROR_MESSAGES.CORRUPTED;
-      return {
-        isValid: false,
-        error: t ? t(`hero.errors.validation.${errorKey}`) : fallbackError,
-        warnings,
-        suggestion: getErrorSuggestion(error.message, t)
-      };
+    let dimensions: { width: number; height: number } | null = null;
+    if (file.type !== 'image/svg+xml') {
+      try {
+        dimensions = await getImageDimensionsSecure(file, opts.processingTimeout);
+      } catch (error: any) {
+        const errorKey = error.message === 'PROCESSING_TIMEOUT' ? 'processing_timeout' : 'corrupted';
+        const fallbackError = error.message === 'PROCESSING_TIMEOUT' ? ERROR_MESSAGES.PROCESSING_TIMEOUT : ERROR_MESSAGES.CORRUPTED;
+        return {
+          isValid: false,
+          error: t ? t(`hero.errors.validation.${errorKey}`) : fallbackError,
+          warnings,
+          suggestion: getErrorSuggestion(error.message, t)
+        };
+      }
     }
     
-    if (dimensions.width < opts.minDimensions.width || dimensions.height < opts.minDimensions.height) {
+    if (dimensions && (dimensions.width < opts.minDimensions.width || dimensions.height < opts.minDimensions.height)) {
       const errorMsg = t
         ? t('hero.errors.validation.dimensions_too_small', { 
             currentWidth: dimensions.width, 
@@ -189,7 +191,7 @@ export const validateImageFile = async (
       };
     }
 
-    if (dimensions.width > opts.maxDimensions.width || dimensions.height > opts.maxDimensions.height) {
+    if (dimensions && (dimensions.width > opts.maxDimensions.width || dimensions.height > opts.maxDimensions.height)) {
        const errorMsg = t
         ? t('hero.errors.validation.dimensions_too_large', { 
             currentWidth: dimensions.width, 

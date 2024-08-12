@@ -11,7 +11,7 @@ import Footer from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
 import { generateIcoFromImage, GeneratedIco, IcoGenerationProgress } from '@/utils/icoGenerator';
 import { generateFaviconPackage, FaviconPackage as FaviconPackageType } from '@/utils/faviconGenerator';
-import { getImageDimensions } from '@/utils/fileUtils';
+import { getImageDimensions, getSvgDimensions } from '@/utils/fileUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedBackground from '@/components/AnimatedBackground';
 
@@ -40,7 +40,10 @@ const Index = () => {
     filename: 'favicon',
     generateFaviconPackage: true,
     includePNG: true,
-    includeWebP: false
+    includeWebP: false,
+    preserveAspectRatio: true,
+    backgroundTransparent: true,
+    backgroundColor: '#000000'
   });
   const { toast } = useToast();
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -57,7 +60,7 @@ const Index = () => {
   }, [processedImage]);
 
   const handleImageUpload = async (file: File) => {
-    console.log('Starting conversion with config:', conversionConfig);
+    if (import.meta.env.DEV) console.log('Starting conversion with config:', conversionConfig);
     setIsProcessing(true);
     setProgress(0);
     setCurrentStep('Iniciando...');
@@ -65,7 +68,9 @@ const Index = () => {
 
     try {
       const originalUrl = URL.createObjectURL(file);
-      const { width, height } = await getImageDimensions(originalUrl);
+      const { width, height } = file.type === 'image/svg+xml'
+        ? await getSvgDimensions(file)
+        : await getImageDimensions(originalUrl);
       
       const generatedIco = await generateIcoFromImage(
         file, 
@@ -73,13 +78,20 @@ const Index = () => {
         (progress: number, currentStep: string) => {
           setProgress(progress);
           setCurrentStep(currentStep);
+        },
+        {
+          preserveAspectRatio: conversionConfig.preserveAspectRatio,
+          backgroundTransparent: conversionConfig.backgroundTransparent,
+          backgroundColor: conversionConfig.backgroundColor
         }
       );
 
-      console.log('ICO generation completed:', {
-        fileSize: generatedIco.fileSize,
-        resolutions: generatedIco.resolutions.length
-      });
+      if (import.meta.env.DEV) {
+        console.log('ICO generation completed:', {
+          fileSize: generatedIco.fileSize,
+          resolutions: generatedIco.resolutions.length
+        });
+      }
 
       let faviconPackage: FaviconPackage | undefined;
       if (conversionConfig.generateFaviconPackage || conversionConfig.includePNG || conversionConfig.includeWebP) {
@@ -127,7 +139,7 @@ const Index = () => {
   };
 
   const handleReset = () => {
-    console.log('Resetting application state');
+    if (import.meta.env.DEV) console.log('Resetting application state');
     if (processedImage?.originalUrl) {
       URL.revokeObjectURL(processedImage.originalUrl);
     }

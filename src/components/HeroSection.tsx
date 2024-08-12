@@ -210,7 +210,7 @@ const HeroSection = ({
             <div
               className={cn(
                 "bg-black/50 rounded-[11px] h-full w-full p-6 sm:p-8 md:p-10 cursor-pointer border-2 border-transparent",
-                "transition-all duration-300",
+                "transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 isDragOver && 'scale-[1.02] border-dashed border-primary/40 bg-primary/10'
               )}
               role="region"
@@ -231,7 +231,7 @@ const HeroSection = ({
               <input
                 id="file-input"
                 type="file"
-                accept="image/png,image/jpeg,image/jpg"
+                accept="image/png,image/jpeg,image/jpg,image/svg+xml"
                 onChange={handleFileSelect}
                 className="hidden"
                 disabled={isProcessing || hasProcessedImage || isRetrying}

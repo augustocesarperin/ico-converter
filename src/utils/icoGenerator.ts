@@ -178,6 +178,12 @@ export interface IcoGenerationOptions {
   quality?: number;
 }
 
+export interface RasterizationOptions {
+  preserveAspectRatio: boolean;
+  backgroundTransparent: boolean;
+  backgroundColor: string; // CSS color like #RRGGBB
+}
+
 export interface GeneratedIco {
   icoBlob: Blob;
   resolutions: { size: number; canvas: HTMLCanvasElement; dataUrl: string }[];
@@ -232,7 +238,7 @@ const SECURITY_LIMITS = {
   maxProcessingTime: 60000,
   maxMemoryUsage: 100 * 1024 * 1024,
   maxConcurrentOperations: 1,
-  maxCanvasSize: 2048 * 2048 * 4,
+  maxCanvasSize: 4096 * 4096 * 4,
 };
 
 let isProcessing = false;
@@ -317,7 +323,8 @@ const withTimeout = <T>(
 const processImageSecurely = async (
   file: File,
   sizes: number[],
-  onProgress?: (progress: number, step: string) => void
+  onProgress?: (progress: number, step: string) => void,
+  rasterOptions?: Partial<RasterizationOptions>
 ): Promise<GeneratedIco> => {
   if (isProcessing) {
     throw new Error('Processamento já em andamento. Aguarde a conclusão da operação atual.');
@@ -356,8 +363,19 @@ const processImageSecurely = async (
     
     onProgress?.(15, 'Processando imagem...');
     
+    const isSvg = file.type === 'image/svg+xml';
     const icoData = await withTimeout(
-      () => generateIcoWithMemoryTracking(img, sizes, onProgress),
+      () => generateIcoWithMemoryTracking(
+        img,
+        sizes,
+        onProgress,
+        isSvg,
+        {
+          preserveAspectRatio: rasterOptions?.preserveAspectRatio ?? true,
+          backgroundTransparent: rasterOptions?.backgroundTransparent ?? true,
+          backgroundColor: rasterOptions?.backgroundColor ?? '#000000',
+        }
+      ),
       SECURITY_LIMITS.maxProcessingTime,
       'Timeout: Processamento demorou muito tempo. Tente com uma imagem menor.'
     );
@@ -379,7 +397,13 @@ const processImageSecurely = async (
 const generateIcoWithMemoryTracking = async (
   img: HTMLImageElement,
   sizes: number[],
-  onProgress?: (progress: number, step: string) => void
+  onProgress?: (progress: number, step: string) => void,
+  isSvg: boolean = false,
+  options: RasterizationOptions = {
+    preserveAspectRatio: true,
+    backgroundTransparent: true,
+    backgroundColor: '#000000',
+  }
 ): Promise<GeneratedIco> => {
   const resizedImages: { size: number; imageData: ImageData }[] = [];
   const progressStep = 70 / sizes.length;
@@ -402,10 +426,10 @@ const generateIcoWithMemoryTracking = async (
     const canvas = document.createElement('canvas');
     if (size * size * 4 > SECURITY_LIMITS.maxCanvasSize) {
       throw new Error(`Tamanho ${size}×${size} muito grande para processamento seguro`);
-      }
+    }
 
-      canvas.width = size;
-      canvas.height = size;
+    canvas.width = size;
+    canvas.height = size;
     memoryTracker.add(canvas);
     
     const ctx = canvas.getContext('2d');
@@ -413,13 +437,37 @@ const generateIcoWithMemoryTracking = async (
       throw new Error('Erro ao criar contexto de renderização');
     }
     
+    // Prepare background
+    if (!options.backgroundTransparent) {
+      ctx.fillStyle = options.backgroundColor || '#000000';
+      ctx.fillRect(0, 0, size, size);
+    } else {
+      ctx.clearRect(0, 0, size, size);
+    }
+
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(img, 0, 0, size, size);
+
+    // Compute draw rect with optional letterbox preserving aspect ratio
+    let destW = size;
+    let destH = size;
+    let dx = 0;
+    let dy = 0;
+    if (options.preserveAspectRatio) {
+      const scale = Math.min(size / img.width, size / img.height);
+      destW = Math.max(1, Math.round(img.width * scale));
+      destH = Math.max(1, Math.round(img.height * scale));
+      dx = Math.floor((size - destW) / 2);
+      dy = Math.floor((size - destH) / 2);
+    }
+    ctx.drawImage(img, 0, 0, img.width, img.height, dx, dy, destW, destH);
+
+    let imageData: ImageData = ctx.getImageData(0, 0, size, size);
+    if (!isSvg && size <= 32) {
+      applySharpen(imageData, 0.15);
+    }
     
-    const imageData = ctx.getImageData(0, 0, size, size);
     memoryTracker.add(imageData);
-    
     resizedImages.push({ size, imageData });
   }
   
@@ -466,7 +514,7 @@ const generateIcoWithMemoryTracking = async (
 
 const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
-    if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
+    if (!['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'].includes(file.type)) {
       reject(new Error('Tipo de arquivo não suportado'));
       return;
     }
@@ -484,14 +532,16 @@ const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
       clearTimeout(timeoutId);
       URL.revokeObjectURL(url);
       
-      if (img.width === 0 || img.height === 0) {
-        reject(new Error('Dimensões da imagem inválidas'));
-        return;
-      }
-      
-      if (img.width > 4096 || img.height > 4096) {
-        reject(new Error('Imagem muito grande. Use uma imagem menor que 4096×4096 pixels.'));
-        return;
+      // Para SVG, ignorar validação de width/height (renderização é vetorial)
+      if (file.type !== 'image/svg+xml') {
+        if (img.width === 0 || img.height === 0) {
+          reject(new Error('Dimensões da imagem inválidas'));
+          return;
+        }
+        if (img.width > 4096 || img.height > 4096) {
+          reject(new Error('Imagem muito grande. Use uma imagem menor que 4096×4096 pixels.'));
+          return;
+        }
       }
       
       resolve(img);
