@@ -57,7 +57,7 @@
     "upload": {
       "title": "Arraste sua imagem aqui",
       "subtitle": "ou clique para selecionar",
-      "constraints": "PNG, JPG ou JPEG • Máximo 50MB",
+      "constraints": "PNG, JPG/JPEG ou SVG • Máximo 50MB",
       "aria_label": "Selecionar arquivo de imagem"
     },
     "processing": {

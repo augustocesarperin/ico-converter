@@ -57,7 +57,7 @@
     "upload": {
       "title": "Drag your image here",
       "subtitle": "or click to select",
-      "constraints": "PNG, JPG or JPEG • Maximum 50MB",
+      "constraints": "PNG, JPG/JPEG or SVG • Maximum 50MB",
       "aria_label": "Select image file"
     },
     "processing": {
@@ -157,6 +157,9 @@
     "filename_label": "Base filename",
     "quality_label": "Image quality",
     "resolutions_label": "ICO resolutions (select desired)",
+    "preserve_aspect_label": "Preserve aspect ratio (letterbox)",
+    "background_label": "Raster background",
+    "background_transparent": "Transparent",
     "package_label": "Full Favicon Package",
     "package_option": {
       "generate": "Generate full package (with `manifest` and `apple-touch-icon`)",

@@ -23,6 +23,9 @@ export interface ConversionConfig {
   generateFaviconPackage: boolean;
   includeWebP: boolean;
   includePNG: boolean;
+  preserveAspectRatio: boolean;
+  backgroundTransparent: boolean;
+  backgroundColor: string;
 }
 
 const AVAILABLE_SIZES = [16, 24, 32, 48, 64, 96, 128, 152, 192, 256, 512];
@@ -118,6 +121,44 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
                         {size}x{size}
                       </MotionButton>
                     ))}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <Label>{t('settings.preserve_aspect_label')}</Label>
+                  <div className="space-y-3 rounded-lg bg-black/40 p-4 border border-white/20">
+                    <div className="flex items-center space-x-3">
+                      <Checkbox
+                        id="preserve-aspect"
+                        checked={currentSettings.preserveAspectRatio}
+                        onCheckedChange={(checked) => updateSettings('preserveAspectRatio', !!checked)}
+                      />
+                      <Label htmlFor="preserve-aspect" className="text-sm font-normal cursor-pointer">
+                        {t('settings.preserve_aspect_label')}
+                      </Label>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>{t('settings.background_label')}</Label>
+                      <div className="flex items-center gap-3">
+                        <Checkbox
+                          id="bg-transparent"
+                          checked={currentSettings.backgroundTransparent}
+                          onCheckedChange={(checked) => updateSettings('backgroundTransparent', !!checked)}
+                        />
+                        <Label htmlFor="bg-transparent" className="text-sm font-normal cursor-pointer">
+                          {t('settings.background_transparent')}
+                        </Label>
+
+                        <Input
+                          type="color"
+                          value={currentSettings.backgroundColor}
+                          onChange={(e) => updateSettings('backgroundColor', e.target.value)}
+                          disabled={currentSettings.backgroundTransparent}
+                          className="w-10 h-8 p-1 bg-black/40 border-white/20"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
