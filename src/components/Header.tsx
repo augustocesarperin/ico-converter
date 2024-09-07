@@ -60,7 +60,7 @@ const Header = () => {
                 {link.name}
               </Button>
             ))}
-            <a href="https://github.com/GutoCode/IcoForge" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/GutoCode/IcoSmith" target="_blank" rel="noopener noreferrer">
               <Button
                 variant="ghost"
                 className="font-medium text-sm text-muted-foreground hover:text-foreground focus-visible-ring"
@@ -100,7 +100,7 @@ const Header = () => {
                           </a>
                         </SheetClose>
                       ))}
-                      <a href="https://github.com/GutoCode/IcoForge" target="_blank" rel="noopener noreferrer" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                      <a href="https://github.com/GutoCode/IcoSmith" target="_blank" rel="noopener noreferrer" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                         {t('nav.github')}
                       </a>
                     </nav>

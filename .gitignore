@@ -36,3 +36,6 @@ node_modules/
 
 coverage
 .nyc_output
+
+# Local security notes (do not commit)
+SECURITY.md
