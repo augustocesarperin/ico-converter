@@ -1,0 +1,53 @@
+{
+  "nav": {
+    "features": "Recursos",
+    "about": "Acerca de",
+    "github": "GitHub",
+    "aria_label": "Ir a la sección {{name}}",
+    "github_aria_label": "Ver código fuente en GitHub",
+    "resources_menu": "Conversores",
+    "resources": {
+      "png_to_ico": "PNG a ICO",
+      "jpg_to_ico": "JPG a ICO",
+      "svg_to_ico": "SVG a ICO",
+      "safari_pinned_tab": "Pestaña fijada de Safari",
+      "electron_macos": "Iconos Electron/macOS"
+    }
+  },
+  "hero": {
+    "title": "IcoSmith",
+    "description": "Convierte imágenes a .ICO — procesado en tu navegador. Rápido y privado.",
+    "features": {
+      "free": "Sin límites",
+      "private": "Procesamiento local",
+      "resolutions": "Tamaños 16–256 px"
+    },
+    "upload": {
+      "title": "Arrastra tu imagen aquí",
+      "subtitle": "o haz clic para seleccionar",
+      "constraints": "Soporta PNG, JPG/JPEG, SVG, WebP, AVIF y BMP • hasta 50 MB",
+      "aria_label": "Seleccionar archivo de imagen",
+      "preview": "Previsualización"
+    }
+  },
+  "features": {
+    "title": "Recursos",
+    "subtitle": "",
+    "fast_processing": { "title": "Rápido", "description": "Conversión en segundos." },
+    "privacy": { "title": "Privado", "description": "Los archivos no salen de tu dispositivo." },
+    "resolutions": { "title": "Varios tamaños", "description": "Genera 16, 32, 48, 64, 128 y 256 px." },
+    "download": { "title": "Descarga inmediata", "description": "Descarga el .ico o el paquete completo." }
+  },
+  "about": {
+    "title": "Acerca de",
+    "description": "IcoSmith es una herramienta para generar .ICO a partir de PNG, JPG/JPEG, SVG, WebP, AVIF y BMP. Todo en el navegador.",
+    "open_source": { "title": "Código abierto (MIT)", "description": "Código en GitHub. Puedes auditar y contribuir." },
+    "privacy": { "title": "Procesamiento local", "description": "La conversión ocurre en tu navegador." }
+  },
+  "footer": {
+    "copyright": "Abstratus Labs\nAugusto César Perin",
+    "source_code": "Código fuente disponible en GitHub"
+  }
+}
+
+

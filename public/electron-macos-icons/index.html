@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Electron & macOS App Icons | IcoSmith</title>
+  <meta name="description" content="Generate favicon and app icons for Electron and macOS. Learn sizes, formats (.icns), and how to integrate.">
+  <link rel="canonical" href="/electron-macos-icons/">
+  <style>
+    :root{color-scheme:dark light}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0a0f1e;color:#e5e7eb}
+    .wrap{max-width:860px;margin:0 auto;padding:32px 16px}
+    h1{font-size:clamp(28px,4vw,40px);line-height:1.1;margin:12px 0;background:linear-gradient(90deg,#f97316,#ef4444);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .box{margin:24px 0;padding:18px;border:1px solid #ffffff1a;border-radius:12px;background:#ffffff0a}
+    .cta{display:inline-block;margin:16px 0;padding:10px 14px;border-radius:10px;background:#f97316;color:#fff;text-decoration:none;font-weight:600}
+    code{background:#00000055;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p><a class="cta" href="/">Open Converter</a></p>
+    <h1>Electron & macOS app icons</h1>
+    <div class="box">
+      <h2>Electron</h2>
+      <p>Electron apps typically use PNGs across sizes (16–256). Use IcoSmith to export all sizes and set them in your build config (electron-builder).</p>
+      <ul>
+        <li>Windows: provide <code>icon.ico</code> (multi-size) and PNGs for installers.</li>
+        <li>Linux: PNGs per size in <code>resources/</code>.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>macOS (.icns)</h2>
+      <p>IcoSmith exports PNGs; to build <code>.icns</code>, use <code>iconutil</code> ou ferramentas de build (electron-builder transforma automaticamente).</p>
+      <ul>
+        <li>Coloque PNGs 16, 32, 64, 128, 256, 512 e 1024 para melhor resultado.</li>
+        <li>Mantenha margens e evite excesso de detalhes pequenos.</li>
+      </ul>
+    </div>
+    <p><a class="cta" href="/">Open Converter</a></p>
+  </div>
+</body>
+</html>
+
+

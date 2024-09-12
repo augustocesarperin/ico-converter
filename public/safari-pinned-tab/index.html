@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Safari Pinned Tab Icon (mask-icon) | IcoSmith</title>
+  <meta name="description" content="Create a Safari pinned tab icon (mask-icon) and add it to your site's <head>. Use a monochrome SVG and set a color.">
+  <link rel="canonical" href="/safari-pinned-tab/">
+  <link rel="alternate" hreflang="x-default" href="/safari-pinned-tab/">
+  <link rel="alternate" hreflang="pt" href="/pt/safari-pinned-tab/">
+  <style>
+    :root{color-scheme:dark light}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0a0f1e;color:#e5e7eb}
+    .wrap{max-width:860px;margin:0 auto;padding:32px 16px}
+    h1{font-size:clamp(28px,4vw,40px);line-height:1.1;margin:12px 0;background:linear-gradient(90deg,#f97316,#ef4444);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .box{margin:24px 0;padding:18px;border:1px solid #ffffff1a;border-radius:12px;background:#ffffff0a}
+    .cta{display:inline-block;margin:16px 0;padding:10px 14px;border-radius:10px;background:#f97316;color:#fff;text-decoration:none;font-weight:600}
+    code{background:#00000055;padding:2px 6px;border-radius:6px}
+    pre{background:#00000066;padding:10px;border-radius:8px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p><a class="cta" href="/">Open Converter</a></p>
+    <h1>Safari pinned tab (mask-icon)</h1>
+    <p>Use a monochrome SVG as your <code>mask-icon</code> and set the desired color. IcoSmith can export an SVG and the rest of your favicon set.</p>
+    <div class="box">
+      <h2>How to add</h2>
+      <ol>
+        <li>Generate your favicon set (ICO + PNGs). Prepare a simple monochrome SVG for Safari.</li>
+        <li>Place <code>safari-pinned-tab.svg</code> in <code>/public</code>.</li>
+        <li>Add this to your <code>&lt;head&gt;</code>:</li>
+      </ol>
+      <pre>&lt;link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0f172a"&gt;</pre>
+    </div>
+    <div class="box">
+      <h2>Tips</h2>
+      <ul>
+        <li>Prefer single color fills; avoid strokes and gradients.</li>
+        <li>Keep margins so the shape doesn't clip at 16–32 px.</li>
+        <li>Test on both light and dark backgrounds.</li>
+      </ul>
+    </div>
+    <p><a class="cta" href="/">Open Converter</a></p>
+  </div>
+</body>
+</html>
+
+

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ícones para Electron e macOS | IcoSmith</title>
+  <meta name="description" content="Gere favicons e ícones de app para Electron e macOS. Tamanhos, formatos (.icns) e integração no build.">
+  <link rel="canonical" href="https://icosmith.com/pt/electron-macos-icons/">
+  <link rel="alternate" hreflang="en" href="https://icosmith.com/electron-macos-icons/">
+  <link rel="alternate" hreflang="pt-BR" href="https://icosmith.com/pt/electron-macos-icons/">
+  <link rel="alternate" hreflang="x-default" href="https://icosmith.com/electron-macos-icons/">
+  <style>
+    :root{color-scheme:dark light}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0a0f1e;color:#e5e7eb}
+    .wrap{max-width:860px;margin:0 auto;padding:32px 16px}
+    h1{font-size:clamp(28px,4vw,40px);line-height:1.1;margin:12px 0;background:linear-gradient(90deg,#f97316,#ef4444);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .box{margin:24px 0;padding:18px;border:1px solid #ffffff1a;border-radius:12px;background:#ffffff0a}
+    .cta{display:inline-block;margin:16px 0;padding:10px 14px;border-radius:10px;background:#f97316;color:#fff;text-decoration:none;font-weight:600}
+    code{background:#00000055;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p><a class="cta" href="/">Abrir conversor</a></p>
+    <h1>Ícones para apps Electron e macOS</h1>
+    <div class="box">
+      <h2>Electron</h2>
+      <p>Apps Electron normalmente usam PNGs nos tamanhos 16–256. Use o IcoSmith para exportar todos os tamanhos e configure no seu build (electron-builder).</p>
+      <ul>
+        <li>Windows: forneça <code>icon.ico</code> (multi-tamanho) e PNGs para instaladores.</li>
+        <li>Linux: PNGs por tamanho em <code>resources/</code>.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>macOS (.icns)</h2>
+      <p>O IcoSmith exporta PNGs; para gerar <code>.icns</code>, use <code>iconutil</code> ou ferramentas de build (electron-builder converte automaticamente).</p>
+      <ul>
+        <li>Inclua PNGs 16, 32, 64, 128, 256, 512 e 1024 para melhor resultado.</li>
+        <li>Mantenha margens e evite excesso de detalhes pequenos.</li>
+      </ul>
+    </div>
+    <p><a class="cta" href="/">Abrir conversor</a></p>
+  </div>
+</body>
+</html>
+
+
