@@ -22,7 +22,10 @@ type ValidationConfig = Omit<FileValidationOptions, 't'>;
 
 const DEFAULT_OPTIONS: Required<ValidationConfig> = {
   maxSizeInMB: 50, 
-  allowedTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'],
+  allowedTypes: [
+    'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp', 'image/gif',
+    'image/avif', 'image/apng', 'image/bmp', 'image/x-icon', 'image/vnd.microsoft.icon'
+  ],
   minDimensions: { width: 16, height: 16 },
   maxDimensions: { width: 4096, height: 4096 }, 
   enableRetry: true,
