@@ -182,6 +182,7 @@ export interface RasterizationOptions {
   preserveAspectRatio: boolean;
   backgroundTransparent: boolean;
   backgroundColor: string; // CSS color like #RRGGBB
+  crispSmallIcons?: boolean;
 }
 
 export interface GeneratedIco {
@@ -374,6 +375,7 @@ const processImageSecurely = async (
           preserveAspectRatio: rasterOptions?.preserveAspectRatio ?? true,
           backgroundTransparent: rasterOptions?.backgroundTransparent ?? true,
           backgroundColor: rasterOptions?.backgroundColor ?? '#000000',
+          crispSmallIcons: rasterOptions?.crispSmallIcons ?? true,
         }
       ),
       SECURITY_LIMITS.maxProcessingTime,
@@ -460,11 +462,50 @@ const generateIcoWithMemoryTracking = async (
       dx = Math.floor((size - destW) / 2);
       dy = Math.floor((size - destH) / 2);
     }
-    ctx.drawImage(img, 0, 0, img.width, img.height, dx, dy, destW, destH);
+    if (size <= 32) {
+      let currentCanvas = document.createElement('canvas');
+      currentCanvas.width = img.width;
+      currentCanvas.height = img.height;
+      const currentCtx = currentCanvas.getContext('2d')!;
+      currentCtx.imageSmoothingQuality = 'high';
+      currentCtx.drawImage(img, 0, 0);
+      while (currentCanvas.width / 2 >= destW && currentCanvas.height / 2 >= destH) {
+        const nextCanvas = document.createElement('canvas');
+        nextCanvas.width = Math.max(destW, Math.floor(currentCanvas.width / 2));
+        nextCanvas.height = Math.max(destH, Math.floor(currentCanvas.height / 2));
+        const nextCtx = nextCanvas.getContext('2d')!;
+        nextCtx.imageSmoothingQuality = 'high';
+        nextCtx.drawImage(currentCanvas, 0, 0, currentCanvas.width, currentCanvas.height, 0, 0, nextCanvas.width, nextCanvas.height);
+        currentCanvas = nextCanvas;
+      }
+      ctx.drawImage(currentCanvas, 0, 0, currentCanvas.width, currentCanvas.height, dx, dy, destW, destH);
+    } else {
+      const trim = (() => {
+        const sampleW = Math.min(img.width, 512);
+        const scale = sampleW / img.width;
+        const sampleH = Math.max(1, Math.round(img.height * scale));
+        const sc = document.createElement('canvas');
+        sc.width = sampleW; sc.height = sampleH;
+        const scx = sc.getContext('2d')!;
+        scx.drawImage(img, 0, 0, sampleW, sampleH);
+        const d = scx.getImageData(0, 0, sampleW, sampleH).data;
+        let minX = sampleW, minY = sampleH, maxX = -1, maxY = -1;
+        for (let y=0;y<sampleH;y++) for (let x=0;x<sampleW;x++) { const a=d[(y*sampleW+x)*4+3]; if(a>8){ if(x<minX)minX=x; if(y<minY)minY=y; if(x>maxX)maxX=x; if(y>maxY)maxY=y; } }
+        if (maxX<minX||maxY<minY) return {sx:0,sy:0,sw:img.width,sh:img.height};
+        const sx = Math.floor(minX/scale), sy = Math.floor(minY/scale);
+        const sw = Math.min(img.width - sx, Math.ceil((maxX-minX+1)/scale));
+        const sh = Math.min(img.height - sy, Math.ceil((maxY-minY+1)/scale));
+        const shrinkX = 1 - sw/img.width, shrinkY = 1 - sh/img.height;
+        if (shrinkX < 0.04 && shrinkY < 0.04) return {sx:0,sy:0,sw:img.width,sh:img.height};
+        return {sx,sy,sw,sh};
+      })();
+      ctx.drawImage(img, trim.sx, trim.sy, trim.sw, trim.sh, dx, dy, destW, destH);
+    }
 
     let imageData: ImageData = ctx.getImageData(0, 0, size, size);
     if (!isSvg && size <= 32) {
-      applySharpen(imageData, 0.15);
+      const s = size <= 16 ? 0.28 : 0.2;
+      applySharpen(imageData, s);
     }
     
     memoryTracker.add(imageData);
@@ -514,7 +555,10 @@ const generateIcoWithMemoryTracking = async (
 
 const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
-    if (!['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'].includes(file.type)) {
+    if (![
+      'image/png','image/jpeg','image/jpg','image/svg+xml','image/webp','image/gif',
+      'image/avif','image/apng','image/bmp','image/x-icon','image/vnd.microsoft.icon'
+    ].includes(file.type)) {
       reject(new Error('Tipo de arquivo não suportado'));
       return;
     }
