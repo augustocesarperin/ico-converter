@@ -190,7 +190,7 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
                       {label}
                     </button>
                   ))}
-            </div>
+                </div>
               </div>
 
               <div className="bg-gradient-to-br from-orange-500/40 via-transparent to-transparent p-[1px] rounded-xl shadow-[0_0_30px_rgba(249,115,22,0.15)] hover:shadow-[0_0_45px_rgba(249,115,22,0.25)] backdrop-blur-sm transition-all duration-300 ease-in-out">

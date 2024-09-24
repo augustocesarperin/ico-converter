@@ -26,6 +26,9 @@ export interface ConversionConfig {
   preserveAspectRatio: boolean;
   backgroundTransparent: boolean;
   backgroundColor: string;
+  crispSmallIcons: boolean;
+  smallIconMode: boolean;
+  smallIconStrength16: number;
 }
 
 const AVAILABLE_SIZES = [16, 24, 32, 48, 64, 96, 128, 152, 192, 256, 512];
@@ -77,6 +80,47 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
+              <div className="px-6 pt-4">
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => onSettingsChange({
+                      ...currentSettings,
+                      selectedSizes: [16, 32, 48, 64, 128, 256],
+                      generateFaviconPackage: true,
+                      includePNG: true,
+                      includeWebP: false,
+                      preserveAspectRatio: true,
+                    })}
+                  >{t('settings.presets.website') || 'Website'}</Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => onSettingsChange({
+                      ...currentSettings,
+                      selectedSizes: [16, 32, 48, 64, 128, 256],
+                      generateFaviconPackage: true,
+                      includePNG: true,
+                      includeWebP: true,
+                      preserveAspectRatio: true,
+                    })}
+                  >{t('settings.presets.pwa') || 'PWA'}</Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => onSettingsChange({
+                      ...currentSettings,
+                      selectedSizes: [16, 24, 32, 48, 64, 128, 256],
+                      generateFaviconPackage: false,
+                      includePNG: false,
+                      includeWebP: false,
+                      preserveAspectRatio: true,
+                    })}
+                  >{t('settings.presets.windows') || 'Windows/Electron'}</Button>
+                </div>
+              </div>
+
               <div className="border-t border-white/10 p-6 pt-4 space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-3">
@@ -137,6 +181,44 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
                         {t('settings.preserve_aspect_label')}
                       </Label>
                     </div>
+
+                    <div className="flex items-center space-x-3">
+                      <Checkbox
+                        id="crisp-small"
+                        checked={currentSettings.crispSmallIcons}
+                        onCheckedChange={(checked) => updateSettings('crispSmallIcons', !!checked)}
+                      />
+                      <Label htmlFor="crisp-small" className="text-sm font-normal cursor-pointer">
+                        {t('settings.crisp_small_label')}
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                      <Checkbox
+                        id="small-icon-mode"
+                        checked={currentSettings.smallIconMode}
+                        onCheckedChange={(checked) => updateSettings('smallIconMode', !!checked)}
+                      />
+                      <Label htmlFor="small-icon-mode" className="text-sm font-normal cursor-pointer">
+                        {t('settings.small_icon_mode_label')}
+                      </Label>
+                    </div>
+
+                    {currentSettings.smallIconMode && (
+                      <div className="mt-2 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <Label>{t('settings.small_icon_strength_label')}</Label>
+                          <span className="text-xs text-muted-foreground">{currentSettings.smallIconStrength16.toFixed(1)}px</span>
+                        </div>
+                        <Slider
+                          value={[currentSettings.smallIconStrength16]}
+                          onValueChange={([value]) => updateSettings('smallIconStrength16', value)}
+                          min={0}
+                          max={2}
+                          step={0.1}
+                        />
+                      </div>
+                    )}
 
                     <div className="space-y-2">
                       <Label>{t('settings.background_label')}</Label>
