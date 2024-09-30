@@ -10,10 +10,13 @@ import ConversionSettings, { ConversionConfig } from '@/components/ConversionSet
 import Footer from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
 import { generateIcoFromImage, GeneratedIco, IcoGenerationProgress } from '@/utils/icoGenerator';
+import { processWithWorker } from '@/utils/icoWorkerClient';
 import { generateFaviconPackage, FaviconPackage as FaviconPackageType } from '@/utils/faviconGenerator';
 import { getImageDimensions, getSvgDimensions } from '@/utils/fileUtils';
+import { sanitizeSvgFile } from '@/utils/svgSanitize';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedBackground from '@/components/AnimatedBackground';
+import { useTranslation } from 'react-i18next';
 
 export interface FaviconPackage extends FaviconPackageType {
   zipBlob?: Blob;
@@ -29,6 +32,7 @@ export interface ProcessedImage extends GeneratedIco {
 }
 
 const Index = () => {
+  const { t } = useTranslation();
   const [processedImage, setProcessedImage] = useState<ProcessedImage | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -43,7 +47,10 @@ const Index = () => {
     includeWebP: false,
     preserveAspectRatio: true,
     backgroundTransparent: true,
-    backgroundColor: '#000000'
+    backgroundColor: '#000000',
+    crispSmallIcons: true,
+    smallIconMode: false
+    , smallIconStrength16: 1.2
   });
   const { toast } = useToast();
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -63,28 +70,68 @@ const Index = () => {
     if (import.meta.env.DEV) console.log('Starting conversion with config:', conversionConfig);
     setIsProcessing(true);
     setProgress(0);
-    setCurrentStep('Iniciando...');
+    setCurrentStep(t('processing.starting'));
     setProcessingError('');
 
     try {
-      const originalUrl = URL.createObjectURL(file);
-      const { width, height } = file.type === 'image/svg+xml'
-        ? await getSvgDimensions(file)
+      const sanitizedFile = file.type === 'image/svg+xml' ? new File([await sanitizeSvgFile(file)], file.name, { type: 'image/svg+xml' }) : file;
+      const originalUrl = URL.createObjectURL(sanitizedFile);
+      const { width, height } = sanitizedFile.type === 'image/svg+xml'
+        ? await getSvgDimensions(sanitizedFile)
         : await getImageDimensions(originalUrl);
       
-      const generatedIco = await generateIcoFromImage(
-        file, 
+      const canUseWorker = typeof Worker !== 'undefined' && typeof OffscreenCanvas !== 'undefined';
+      let generatedIco: GeneratedIco;
+      if (canUseWorker) {
+        setCurrentStep(t('processing.processing_worker'));
+        const { icoBlob, pngs } = await processWithWorker({
+          file: sanitizedFile,
+          sizes: conversionConfig.selectedSizes,
+          options: {
+            preserveAspectRatio: conversionConfig.preserveAspectRatio,
+            backgroundTransparent: conversionConfig.backgroundTransparent,
+            backgroundColor: conversionConfig.backgroundColor,
+            crispSmallIcons: conversionConfig.crispSmallIcons,
+            smallIconMode: conversionConfig.smallIconMode,
+            smallIconStrength16: conversionConfig.smallIconStrength16,
+          },
+          onProgress: (p, s) => { setProgress(p); setCurrentStep(s); },
+        });
+        const resolutions = await Promise.all(pngs.map(async (p) => {
+          const canvas = document.createElement('canvas');
+          canvas.width = p.size; canvas.height = p.size;
+          const ctx = canvas.getContext('2d')!;
+          try {
+            const bitmap = await createImageBitmap(p.blob);
+            ctx.drawImage(bitmap, 0, 0);
+          } catch {
+            await new Promise<void>((resolve, reject) => {
+              const url = URL.createObjectURL(p.blob);
+              const img = new Image();
+              img.onload = () => { ctx.drawImage(img, 0, 0); URL.revokeObjectURL(url); resolve(); };
+              img.onerror = (e) => { URL.revokeObjectURL(url); reject(e); };
+              img.src = url;
+            });
+          }
+          const dataUrl = canvas.toDataURL('image/png');
+          return { size: p.size, canvas, dataUrl };
+        }));
+        generatedIco = { icoBlob, resolutions, fileSize: icoBlob.size };
+      } else {
+        generatedIco = await generateIcoFromImage(
+          sanitizedFile, 
         conversionConfig.selectedSizes,
         (progress: number, currentStep: string) => {
           setProgress(progress);
           setCurrentStep(currentStep);
-        },
-        {
-          preserveAspectRatio: conversionConfig.preserveAspectRatio,
-          backgroundTransparent: conversionConfig.backgroundTransparent,
-          backgroundColor: conversionConfig.backgroundColor
+          },
+          {
+            preserveAspectRatio: conversionConfig.preserveAspectRatio,
+            backgroundTransparent: conversionConfig.backgroundTransparent,
+            backgroundColor: conversionConfig.backgroundColor
         }
       );
+      }
 
       if (import.meta.env.DEV) {
         console.log('ICO generation completed:', {
@@ -95,7 +142,7 @@ const Index = () => {
 
       let faviconPackage: FaviconPackage | undefined;
       if (conversionConfig.generateFaviconPackage || conversionConfig.includePNG || conversionConfig.includeWebP) {
-        setCurrentStep('Gerando pacote completo...');
+        setCurrentStep(t('processing.generating_package'));
         setProgress(95);
         
         faviconPackage = await generateFaviconPackage(
@@ -117,20 +164,20 @@ const Index = () => {
 
       setProcessedImage(processed);
       
-      const packageInfo = faviconPackage ? ` + ${faviconPackage.files.length - 1} arquivos extras` : '';
+      const packageInfo = faviconPackage ? t('processing.package_info', { count: faviconPackage.files.length - 1 }) : '';
       toast({
-        title: "Conversão concluída!",
-        description: `ICO criado com ${generatedIco.resolutions.length} resoluções${packageInfo}`,
+        title: t('processing.success_toast_title'),
+        description: t('processing.success_toast_description', { count: generatedIco.resolutions.length, packageInfo }),
       });
 
     } catch (error) {
       console.error('Error generating ICO:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      const errorMessage = error instanceof Error ? error.message : t('processing.unknown_error');
       setProcessingError(errorMessage);
       
       toast({
-        title: "Erro na conversão",
-        description: "Tente novamente com um arquivo PNG ou JPG válido",
+        title: t('processing.error_toast_title'),
+        description: t('processing.error_toast_description'),
         variant: "destructive",
       });
     } finally {

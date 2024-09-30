@@ -2,7 +2,7 @@
   "id": "/",
   "name": "IcoSmith",
   "short_name": "IcoSmith",
-  "description": "Convert PNG/JPG to ICO entirely in your browser.",
+  "description": "Convert PNG/JPG/SVG to ICO entirely in your browser.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

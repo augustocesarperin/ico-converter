@@ -1,38 +1,38 @@
 {
   "features": {
-    "title": "Recursos Essenciais",
-    "subtitle": "Construído com foco em velocidade, privacidade e qualidade.",
+    "title": "Recursos",
+    "subtitle": "",
     "fast_processing": {
-      "title": "Processamento Rápido",
-      "description": "Conversão instantânea no seu navegador, sem envio para servidores"
+      "title": "Rápido",
+      "description": "Conversão em segundos."
     },
     "privacy": {
-      "title": "Privacidade Total",
-      "description": "Suas imagens nunca saem do seu dispositivo, garantindo total privacidade"
+      "title": "Privado",
+      "description": "As imagens não saem do seu dispositivo."
     },
     "resolutions": {
-      "title": "Múltiplas Resoluções",
-      "description": "Gera automaticamente 16x16, 32x32, 48x48 e 64x64 pixels"
+      "title": "Vários tamanhos",
+      "description": "Gera 16, 32, 48, 64, 128 e 256 px."
     },
     "download": {
-      "title": "Download Instantâneo",
-      "description": "Baixe seu arquivo ICO pronto para uso em segundos"
+      "title": "Download imediato",
+      "description": "Baixe o .ico ou o pacote completo."
     }
   },
   "about": {
-    "title": "Sobre o IcoSmith",
-    "description": "IcoSmith é uma ferramenta de código aberto, criada com paixão para desenvolvedores e designers que buscam uma maneira rápida e confiável de converter imagens para o formato .ico.",
+    "title": "Sobre",
+    "description": "IcoSmith é uma ferramenta para gerar .ICO a partir de PNG, JPG/JPEG, SVG, WebP, AVIF e BMP. Tudo no navegador.",
     "free": {
-      "title": "100% Gratuito",
-      "description": "Sem limites, sem cadastro, sem pegadinhas."
+      "title": "Gratuito",
+      "description": "Sem contas. Sem limites."
     },
     "open_source": {
-      "title": "Código Aberto",
-      "description": "Transparente e auditável por qualquer pessoa."
+      "title": "Código aberto (MIT)",
+      "description": "Código no GitHub. Você pode auditar e contribuir."
     },
     "privacy": {
-      "title": "Privado por Design",
-      "description": "Processamento local. Seus dados nunca saem do seu dispositivo."
+      "title": "Processamento local",
+      "description": "A conversão ocorre no seu navegador. Arquivos não são enviados."
     }
   },
   "nav": {
@@ -40,25 +40,35 @@
     "about": "Sobre",
     "github": "GitHub",
     "aria_label": "Navegar para seção {{name}}",
-    "github_aria_label": "Ver código fonte no GitHub"
+    "github_aria_label": "Ver código fonte no GitHub",
+    "resources_menu": "Conversões",
+    "resources": {
+      "png_to_ico": "PNG para ICO",
+      "jpg_to_ico": "JPG para ICO",
+      "svg_to_ico": "SVG para ICO",
+      "safari_pinned_tab": "Favicon Safari",
+      "electron_macos": "Ícones Electron/macOS"
+    }
   },
   "footer": {
-    "copyright": "© 2024 Augusto Cesar Perin | Abstratus Labs",
+    "copyright": "Abstratus Labs\nAugusto César Perin",
     "source_code": "Código fonte disponível no GitHub"
   },
   "hero": {
     "title": "IcoSmith",
-    "description": "Converta PNG ou JPG para .ICO no navegador — sem upload, todos os tamanhos, pronto em segundos.",
+    "description": "Converta PNG, JPG/JPEG, SVG, WebP, AVIF ou BMP para .ICO.",
+    "formats": "Suporta: PNG, JPG/JPEG, SVG, WebP, AVIF e BMP.",
     "features": {
-      "free": "Ilimitado",
-      "private": "Privado e seguro",
-      "resolutions": "Todas as resoluções"
+      "free": "Sem limites",
+      "private": "Processamento local",
+      "resolutions": "Tamanhos 16–256 px"
     },
     "upload": {
       "title": "Arraste sua imagem aqui",
       "subtitle": "ou clique para selecionar",
-      "constraints": "PNG, JPG/JPEG ou SVG • Máximo 50MB",
-      "aria_label": "Selecionar arquivo de imagem"
+      "constraints": "PNG, JPG/JPEG, SVG, WebP, AVIF e BMP • Máximo 50MB",
+      "aria_label": "Selecionar arquivo de imagem",
+      "preview": "Pré-visualização"
     },
     "processing": {
       "success_title": "Processamento concluído!",
@@ -79,7 +89,10 @@
         "network": "Erro de rede. Verifique sua conexão e tente novamente.",
         "unknown": "Erro inesperado. Tente novamente ou use outro arquivo.",
         "rate_limit": "Muitos uploads em pouco tempo. Aguarde um momento.",
-        "processing_timeout": "Processamento demorou demais. Tente com uma imagem menor."
+        "processing_timeout": "Processamento demorou demais. Tente com uma imagem menor.",
+        "svg_too_large": "Arquivo SVG muito grande (máximo 5MB).",
+        "svg_too_complex": "SVG muito complexo (máximo 5000 elementos).",
+        "svg_too_nested": "SVG com muitos níveis de aninhamento (máximo 50 níveis)."
       },
       "suggestions": {
         "file_type": "Tente converter sua imagem para PNG ou JPG.",
@@ -87,6 +100,9 @@
         "dimensions_too_small": "Use uma imagem com resolução maior.",
         "dimensions_too_large": "Redimensione a imagem para menos de 4096x4096px.",
         "corrupted": "O arquivo parece danificado. Tente exportá-lo novamente.",
+        "svg_too_large": "Use um editor SVG para reduzir o tamanho do arquivo.",
+        "svg_too_complex": "Simplifique o SVG removendo elementos desnecessários.",
+        "svg_too_nested": "Reduza o nível de aninhamento dos elementos SVG.",
         "generic": "Tente recarregar a página ou usar um arquivo diferente."
       },
       "processing": {
@@ -152,12 +168,31 @@
       "default": { "name": "Personalizado", "description": "Uso personalizado" }
     }
   },
+  "processing": {
+    "starting": "Iniciando...",
+    "processing_worker": "Processando no worker...",
+    "generating_package": "Gerando pacote completo...",
+    "package_info": " + {{count}} arquivos extras",
+    "success_toast_title": "Conversão concluída!",
+    "success_toast_description": "ICO criado com {{count}} resoluções{{packageInfo}}",
+    "error_toast_title": "Erro na conversão",
+    "error_toast_description": "Tente novamente com um arquivo PNG ou JPG válido",
+    "unknown_error": "Erro desconhecido"
+  },
   "settings": {
     "title": "Opções Avançadas",
     "filename_label": "Nome do arquivo base",
     "quality_label": "Qualidade da imagem",
     "resolutions_label": "Resoluções do .ico (selecione as desejadas)",
+    "crisp_small_label": "Realçar 16px/32px (multi‑etapas + nitidez)",
+    "small_icon_mode_label": "Modo ícone pequeno (engrossar 1px em 16/32)",
+    "small_icon_strength_label": "Força para 16px",
     "package_label": "Pacote de Favicon Completo",
+    "presets": {
+      "website": "Website",
+      "pwa": "PWA",
+      "windows": "Windows/Electron"
+    },
     "package_option": {
       "generate": "Gerar pacote completo (com `manifest` e `apple-touch-icon`)",
       "include_png": "Incluir arquivos PNG individuais no .zip",

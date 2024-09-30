@@ -2,12 +2,21 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Menu, Star, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { useTranslation } from 'react-i18next';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const { t } = useTranslation();
+  const [activeSection, setActiveSection] = useState<string>('');
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,10 +25,39 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const sections = ['#features', '#about'];
+    const observers: IntersectionObserver[] = [];
+    sections.forEach((id) => {
+      const el = document.querySelector(id);
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setActiveSection(id);
+            }
+          });
+        },
+        { rootMargin: '-30% 0px -60% 0px', threshold: 0.01 }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
   
   const navLinks = [
     { name: t('nav.features'), href: '#features' },
     { name: t('nav.about'), href: '#about' }
+  ];
+  const resourceLinks = [
+    { name: t('nav.resources.png_to_ico', { defaultValue: 'PNG→ICO' }), href: '/png-to-ico/' },
+    { name: t('nav.resources.jpg_to_ico', { defaultValue: 'JPG→ICO' }), href: '/jpg-to-ico/' },
+    { name: t('nav.resources.svg_to_ico', { defaultValue: 'SVG→ICO' }), href: '/svg-to-ico/' },
+    { name: t('nav.resources.safari_pinned_tab', { defaultValue: 'Safari pinned tab' }), href: '/safari-pinned-tab/' },
+    { name: t('nav.resources.electron_macos', { defaultValue: 'Electron/macOS' }), href: '/electron-macos-icons/' },
   ];
 
   const scrollToSection = (id: string) => {
@@ -54,13 +92,37 @@ const Header = () => {
                 key={link.name}
                 variant="ghost"
                 onClick={() => scrollToSection(link.href)}
-                className="font-medium text-sm text-muted-foreground hover:text-foreground focus-visible-ring"
+                className={cn(
+                  'font-medium text-sm hover:text-foreground focus-visible-ring',
+                  activeSection === link.href ? 'text-foreground' : 'text-muted-foreground'
+                )}
                 aria-label={t('nav.aria_label', { name: link.name })}
               >
                 {link.name}
               </Button>
             ))}
-            <a href="https://github.com/GutoCode/IcoSmith" target="_blank" rel="noopener noreferrer">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="font-medium text-sm text-muted-foreground hover:text-foreground focus-visible-ring"
+                >
+                  {t('nav.resources_menu', { defaultValue: 'Resources' })} ▾
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[220px]">
+                <DropdownMenuLabel>{t('nav.features')}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {resourceLinks.map((link) => (
+                  <DropdownMenuItem key={link.href} asChild>
+                    <a href={link.href} className="w-full">
+                      {link.name}
+                    </a>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <a href="https://github.com/augustocesarperin/ico-converter" target="_blank" rel="noopener noreferrer">
               <Button
                 variant="ghost"
                 className="font-medium text-sm text-muted-foreground hover:text-foreground focus-visible-ring"
@@ -100,14 +162,30 @@ const Header = () => {
                           </a>
                         </SheetClose>
                       ))}
-                      <a href="https://github.com/GutoCode/IcoSmith" target="_blank" rel="noopener noreferrer" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                      {resourceLinks.map((link) => (
+                        <a key={link.href} href={link.href} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                          {link.name}
+                        </a>
+                      ))}
+                      <a href="https://github.com/augustocesarperin/ico-converter" target="_blank" rel="noopener noreferrer" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                         {t('nav.github')}
                       </a>
+                      <div className="pt-4 flex items-center gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => { i18n.changeLanguage('pt'); localStorage.setItem('lang','pt'); }}>PT</Button>
+                        <Button variant="ghost" size="sm" onClick={() => { i18n.changeLanguage('en'); localStorage.setItem('lang','en'); }}>EN</Button>
+                        <Button variant="ghost" size="sm" onClick={() => { i18n.changeLanguage('es'); localStorage.setItem('lang','es'); }}>ES</Button>
+                      </div>
                     </nav>
                   </div>
                 </div>
               </SheetContent>
             </Sheet>
+            <div className="ml-2 hidden md:flex"></div>
+          </div>
+          <div className="hidden md:flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => { i18n.changeLanguage('pt'); localStorage.setItem('lang','pt'); }} className={cn('text-sm', i18n.language.startsWith('pt') ? 'text-foreground' : 'text-muted-foreground')}>PT</Button>
+            <Button variant="ghost" size="sm" onClick={() => { i18n.changeLanguage('en'); localStorage.setItem('lang','en'); }} className={cn('text-sm', i18n.language.startsWith('en') ? 'text-foreground' : 'text-muted-foreground')}>EN</Button>
+            <Button variant="ghost" size="sm" onClick={() => { i18n.changeLanguage('es'); localStorage.setItem('lang','es'); }} className={cn('text-sm', i18n.language.startsWith('es') ? 'text-foreground' : 'text-muted-foreground')}>ES</Button>
           </div>
         </div>
       </div>

@@ -9,8 +9,13 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'en',
-    supportedLngs: ['pt', 'en'],
+    supportedLngs: ['pt', 'en', 'es'],
     debug: import.meta.env.DEV,
+    detection: {
+      order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
+      lookupQuerystring: 'lang',
+      caches: ['localStorage'],
+    },
     interpolation: {
       escapeValue: false,
     },

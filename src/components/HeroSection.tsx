@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Upload, X, AlertTriangle, Infinity, ShieldCheck, Diamond, Loader2, RefreshCw } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Upload, X, AlertTriangle, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -7,7 +7,6 @@ import ProcessingProgress from './ProcessingProgress';
 import { validateImageFile, getErrorSuggestion } from '@/utils/fileValidation';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
 
 interface HeroSectionProps {
   onImageUpload: (file: File) => void;
@@ -37,6 +36,17 @@ const HeroSection = ({
   const [isRetrying, setIsRetrying] = useState<boolean>(false);
   const [lastFile, setLastFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [acceptString, setAcceptString] = useState<string>('image/png,image/jpeg,image/jpg,image/svg+xml,image/gif,image/apng,image/bmp,image/x-icon,image/vnd.microsoft.icon');
+  useEffect(() => {
+    (async () => {
+      const { buildAcceptString } = await import('@/utils/formatSupport');
+      try { 
+        setAcceptString(await buildAcceptString()); 
+      } catch {
+        // Fallback to default accept string if format detection fails
+      }
+    })();
+  }, []);
 
   const validateAndUpload = async (file: File, isRetry = false) => {
     if (!isRetry) {
@@ -49,7 +59,9 @@ const HeroSection = ({
         const url = URL.createObjectURL(file);
         if (previewUrl) URL.revokeObjectURL(previewUrl);
         setPreviewUrl(url);
-      } catch {}
+      } catch {
+        // Failed to create preview URL
+      }
     }
 
     if (isRetry) {
@@ -125,11 +137,6 @@ const HeroSection = ({
     e.target.value = '';
   };
 
-  const keyFeatures = [
-    { label: t('hero.features.free'), icon: Infinity },
-    { label: t('hero.features.private'), icon: ShieldCheck },
-    { label: t('hero.features.resolutions'), icon: Diamond }
-  ];
 
   const titleContainerVariants = {
     hidden: { opacity: 0 },
@@ -174,23 +181,12 @@ const HeroSection = ({
               ))}
             </motion.h1>
             
-            <p className="text-base sm:text-lg text-foreground/80 max-w-2xl mx-auto font-medium bg-gradient-to-r from-foreground/95 via-foreground/85 to-foreground/80 bg-clip-text text-transparent">
-              {t('hero.description')}
-            </p>
-            
-            <div 
-              className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 pt-2 sm:pt-4"
-            >
-              {keyFeatures.map((feature, index) => (
-                <div 
-                  key={feature.label} 
-                  className="feature-pill text-xs sm:text-sm"
-                >
-                  <feature.icon className="h-3 w-3 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
-                  <span className="font-medium whitespace-nowrap">{feature.label}</span>
-                </div>
-              ))}
+            <div className="space-y-0.5">
+              <p className="text-sm sm:text-base text-foreground/80 max-w-2xl mx-auto font-medium bg-gradient-to-r from-foreground/95 via-foreground/85 to-foreground/80 bg-clip-text text-transparent">
+                {t('hero.description')}
+              </p>
             </div>
+            
           </div>
 
           {(isProcessing || processingError) && (
@@ -205,11 +201,11 @@ const HeroSection = ({
           )}
 
           <div
-            className="w-full max-w-2xl mx-auto bg-gradient-to-br from-orange-500/40 via-transparent to-transparent p-[1px] rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.1)] hover:shadow-[0_0_40px_-10px_rgba(249,115,22,0.4)] backdrop-blur-sm transition-all duration-300 ease-in-out"
+            className="w-full max-w-2xl mx-auto bg-gradient-to-br from-orange-500/40 via-transparent to-transparent p-[1px] rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.1)] hover:shadow-[0_0_36px_-12px_rgba(249,115,22,0.35)] backdrop-blur-sm transition-all duration-300 ease-in-out"
           >
             <div
               className={cn(
-                "bg-black/50 rounded-[11px] h-full w-full p-6 sm:p-8 md:p-10 cursor-pointer border-2 border-transparent",
+                "bg-black/50 rounded-[11px] h-full w-full p-5 sm:p-7 md:p-9 cursor-pointer border-2 border-transparent",
                 "transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 isDragOver && 'scale-[1.02] border-dashed border-primary/40 bg-primary/10'
               )}
@@ -231,7 +227,7 @@ const HeroSection = ({
               <input
                 id="file-input"
                 type="file"
-                accept="image/png,image/jpeg,image/jpg,image/svg+xml"
+                accept={acceptString}
                 onChange={handleFileSelect}
                 className="hidden"
                 disabled={isProcessing || hasProcessedImage || isRetrying}
@@ -271,7 +267,7 @@ const HeroSection = ({
                         <div className="aspect-square rounded-lg overflow-hidden border border-white/10 bg-checkerboard">
                           <img src={previewUrl} alt="Preview" className="w-full h-full object-contain" />
                         </div>
-                        <p className="mt-2 text-xs text-muted-foreground">Pré-visualização</p>
+                        <p className="mt-2 text-xs text-muted-foreground">{t('hero.upload.preview')}</p>
                       </div>
                     )}
 

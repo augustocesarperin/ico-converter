@@ -1,7 +1,7 @@
 {
   "features": {
-    "title": "Essential Features",
-    "subtitle": "Built with a focus on speed, privacy, and quality.",
+    "title": "Resources",
+    "subtitle": "",
     "fast_processing": {
       "title": "Fast Processing",
       "description": "Instant conversion in your browser, no server uploads"
@@ -20,15 +20,15 @@
     }
   },
   "about": {
-    "title": "About IcoSmith",
-    "description": "IcoSmith is an open-source tool, created with passion for developers and designers looking for a fast and reliable way to convert images to the .ico format.",
+    "title": "About",
+    "description": "IcoSmith is a tool that turns PNG, JPG/JPEG, SVG, WebP, GIF/APNG (first frame), AVIF, BMP and ICO into .ICO.",
     "free": {
       "title": "100% Free",
-      "description": "No limits, no sign-up, no hidden catches."
+      "description": "Forever free. No accounts. No tricks."
     },
     "open_source": {
       "title": "Open Source",
-      "description": "Transparent and auditable by anyone."
+      "description": "MIT licensed. Built in the open. Contributions welcome."
     },
     "privacy": {
       "title": "Private by Design",
@@ -36,19 +36,27 @@
     }
   },
   "nav": {
-    "features": "Features",
+    "features": "Resources",
     "about": "About",
     "github": "GitHub",
     "aria_label": "Navigate to {{name}} section",
-    "github_aria_label": "View source code on GitHub"
+    "github_aria_label": "View source code on GitHub",
+    "resources_menu": "Converters",
+    "resources": {
+      "png_to_ico": "PNG to ICO",
+      "jpg_to_ico": "JPG to ICO",
+      "svg_to_ico": "SVG to ICO",
+      "safari_pinned_tab": "Safari pinned tab",
+      "electron_macos": "Electron/macOS"
+    }
   },
   "footer": {
-    "copyright": "© 2024 Augusto Cesar Perin | Abstratus Labs",
+    "copyright": "Abstratus Labs\nAugusto César Perin",
     "source_code": "Source code available on GitHub"
   },
   "hero": {
     "title": "IcoSmith",
-    "description": "Convert PNG or JPG to .ICO in your browser — no uploads, all common sizes, ready in seconds.",
+    "description": "Convert PNG, JPG/JPEG, SVG, WebP, AVIF or BMP to .ICO.",
     "features": {
       "free": "Unlimited",
       "private": "Private & Secure",
@@ -57,8 +65,9 @@
     "upload": {
       "title": "Drag your image here",
       "subtitle": "or click to select",
-      "constraints": "PNG, JPG/JPEG or SVG • Maximum 50MB",
-      "aria_label": "Select image file"
+      "constraints": "PNG, JPG/JPEG, SVG, WEBP, GIF, AVIF, APNG, BMP or ICO • Maximum 50MB",
+      "aria_label": "Select image file",
+      "preview": "Preview"
     },
     "processing": {
       "success_title": "Processing complete!",
@@ -152,15 +161,34 @@
       "default": { "name": "Custom", "description": "Custom usage" }
     }
   },
+  "processing": {
+    "starting": "Starting...",
+    "processing_worker": "Processing in worker...",
+    "generating_package": "Generating complete package...",
+    "package_info": " + {{count}} extra files",
+    "success_toast_title": "Conversion completed!",
+    "success_toast_description": "ICO created with {{count}} resolutions{{packageInfo}}",
+    "error_toast_title": "Conversion error",
+    "error_toast_description": "Try again with a valid PNG or JPG file",
+    "unknown_error": "Unknown error"
+  },
   "settings": {
     "title": "Advanced Options",
     "filename_label": "Base filename",
     "quality_label": "Image quality",
     "resolutions_label": "ICO resolutions (select desired)",
     "preserve_aspect_label": "Preserve aspect ratio (letterbox)",
+    "crisp_small_label": "Sharper 16px/32px (multi‑step + sharpen)",
+    "small_icon_mode_label": "Small icon mode (thicken 1px for 16/32)",
+    "small_icon_strength_label": "Strength for 16px",
     "background_label": "Raster background",
     "background_transparent": "Transparent",
     "package_label": "Full Favicon Package",
+    "presets": {
+      "website": "Website",
+      "pwa": "PWA",
+      "windows": "Windows/Electron"
+    },
     "package_option": {
       "generate": "Generate full package (with `manifest` and `apple-touch-icon`)",
       "include_png": "Include individual PNG files in .zip",

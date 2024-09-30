@@ -21,7 +21,7 @@
     --secondary: 220 13% 18%;
     --secondary-foreground: 0 0% 98%;
     --muted: 220 13% 18%;
-    --muted-foreground: 220 9% 46%;
+    --muted-foreground: 220 9% 55%;
     --accent: 25 95% 53%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
@@ -30,6 +30,19 @@
     --input: 220 13% 18%;
     --ring: 25 95% 53%;
     --radius: 0.75rem;
+    
+    /* Extended palette */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+    --primary-light: 25 95% 63%;
+    --primary-dark: 25 95% 43%;
+    --surface-elevated: 220 15% 12%;
+    --gradient-start: 25 95% 53%;
+    --gradient-end: 38 92% 50%;
   }
 
   .dark {
@@ -44,7 +57,7 @@
     --secondary: 220 13% 18%;
     --secondary-foreground: 0 0% 98%;
     --muted: 220 13% 18%;
-    --muted-foreground: 220 9% 46%;
+    --muted-foreground: 220 9% 55%;
     --accent: 25 95% 53%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 63% 31%;
@@ -52,6 +65,19 @@
     --border: 220 13% 18%;
     --input: 220 13% 18%;
     --ring: 25 95% 53%;
+    
+    /* Extended palette for dark mode */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+    --primary-light: 25 95% 63%;
+    --primary-dark: 25 95% 43%;
+    --surface-elevated: 220 15% 12%;
+    --gradient-start: 25 95% 53%;
+    --gradient-end: 38 92% 50%;
   }
 }
 
@@ -100,12 +126,30 @@
   }
 
   .feature-pill {
-    @apply flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm text-foreground/90 transition-all duration-300;
+    @apply flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-xs md:text-sm text-foreground/90 transition-all duration-200 font-medium;
   }
   
   .feature-pill:hover {
-    @apply scale-105 border-primary/30 bg-primary/10;
+    @apply border-primary/35 bg-primary/15 text-foreground shadow;
   }
+
+  /* Gradient utilities */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
+  }
+  
+  .gradient-primary-subtle {
+    background: linear-gradient(135deg, hsl(var(--gradient-start) / 0.1) 0%, hsl(var(--gradient-end) / 0.1) 100%);
+  }
+
+  /* Status color utilities */
+  .text-success { color: hsl(var(--success)); }
+  .text-warning { color: hsl(var(--warning)); }
+  .text-info { color: hsl(var(--info)); }
+  .bg-success { background-color: hsl(var(--success)); }
+  .bg-warning { background-color: hsl(var(--warning)); }
+  .bg-info { background-color: hsl(var(--info)); }
+  .bg-surface-elevated { background-color: hsl(var(--surface-elevated)); }
 }
 
 @layer utilities {
