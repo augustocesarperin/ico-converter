@@ -56,7 +56,7 @@
   },
   "hero": {
     "title": "IcoSmith",
-    "description": "Convert PNG, JPG/JPEG, SVG, WebP, AVIF or BMP to .ICO.",
+    "description": "Convert PNG, JPG/JPEG, SVG, WebP, AVIF or BMP to .ICO",
     "features": {
       "free": "Unlimited",
       "private": "Private & Secure",
@@ -65,7 +65,7 @@
     "upload": {
       "title": "Drag your image here",
       "subtitle": "or click to select",
-      "constraints": "PNG, JPG/JPEG, SVG, WEBP, GIF, AVIF, APNG, BMP or ICO • Maximum 50MB",
+      "constraints": "PNG, JPG/JPEG, SVG, WEBP, GIF, AVIF, APNG, BMP or ICO",
       "aria_label": "Select image file",
       "preview": "Preview"
     },
