@@ -43,7 +43,7 @@ const Index = () => {
     quality: 0.95,
     filename: 'favicon',
     generateFaviconPackage: true,
-    includePNG: true,
+    includePNG: false,
     includeWebP: false,
     preserveAspectRatio: true,
     backgroundTransparent: true,

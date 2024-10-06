@@ -7,7 +7,7 @@ import { initAnalytics } from './analytics';
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Suspense fallback="...loading">
+    <Suspense fallback={<div></div>}>
       <Index />
     </Suspense>
   </React.StrictMode>,
