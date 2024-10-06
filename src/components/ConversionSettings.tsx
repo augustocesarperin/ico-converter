@@ -50,18 +50,18 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
 
   return (
     <div className={cn(
-      "w-full max-w-2xl mx-auto bg-gradient-to-br from-orange-500/40 via-transparent to-transparent p-[1px] rounded-xl backdrop-blur-sm transition-all duration-300 ease-in-out",
+      "w-full max-w-xl sm:max-w-2xl mx-auto bg-gradient-to-br from-orange-500/40 via-transparent to-transparent p-[1px] rounded-xl backdrop-blur-sm transition-all duration-300 ease-in-out",
       "shadow-[0_0_30px_rgba(249,115,22,0.15)] hover:shadow-[0_0_45px_rgba(249,115,22,0.25)]",
       isExpanded && "shadow-[0_0_45px_rgba(249,115,22,0.3)]"
     )}>
       <div className="bg-black/50 rounded-[11px] h-full w-full">
         <div 
-          className="flex items-center justify-between cursor-pointer p-4"
+          className="flex items-center justify-between cursor-pointer p-3 sm:p-4"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          <div className="flex items-center gap-3">
-            <Settings className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-semibold text-foreground">{t('settings.title')}</h3>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+            <h3 className="text-base sm:text-lg font-semibold text-foreground">{t('settings.title')}</h3>
           </div>
           <motion.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -80,7 +80,7 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              <div className="px-6 pt-4">
+              <div className="px-3 sm:px-6 pt-4">
                 <div className="flex flex-wrap gap-2">
                   <Button
                     variant="secondary"
@@ -121,8 +121,8 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
                 </div>
               </div>
 
-              <div className="border-t border-white/10 p-6 pt-4 space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="border-t border-white/10 p-3 sm:p-6 pt-4 space-y-6 sm:space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
                   <div className="space-y-3">
                     <Label htmlFor="filename">{t('settings.filename_label')}</Label>
                     <Input

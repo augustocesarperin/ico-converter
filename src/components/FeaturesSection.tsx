@@ -63,7 +63,7 @@ const FeaturesSection = () => {
                 key={feature.titleKey}
                 className="bg-gradient-to-br from-orange-500/25 via-transparent to-transparent p-[1px] rounded-xl backdrop-blur-sm transition-all duration-300 ease-in-out hover:shadow-[0_0_28px_-10px_rgba(249,115,22,0.28)]"
               >
-                <div className="bg-black/50 rounded-[11px] p-6 md:p-7 h-full w-full text-left md:text-center flex flex-col items-start md:items-center gap-3">
+                <div className="bg-black/50 rounded-[11px] p-6 md:p-7 h-full w-full text-center flex flex-col items-center gap-3">
                   <div className="inline-flex p-3 rounded-lg bg-primary/90 shadow-sm">
                     <Icon className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
                   </div>

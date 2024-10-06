@@ -182,7 +182,7 @@ const HeroSection = ({
             </motion.h1>
             
             <div className="space-y-0.5">
-              <p className="text-sm sm:text-base text-foreground/80 max-w-2xl mx-auto font-medium bg-gradient-to-r from-foreground/95 via-foreground/85 to-foreground/80 bg-clip-text text-transparent">
+              <p className="text-xs sm:text-sm text-foreground/70 max-w-2xl mx-auto font-normal bg-gradient-to-r from-foreground/90 via-foreground/75 to-foreground/70 bg-clip-text text-transparent">
                 {t('hero.description')}
               </p>
             </div>
@@ -201,11 +201,11 @@ const HeroSection = ({
           )}
 
           <div
-            className="w-full max-w-2xl mx-auto bg-gradient-to-br from-orange-500/40 via-transparent to-transparent p-[1px] rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.1)] hover:shadow-[0_0_36px_-12px_rgba(249,115,22,0.35)] backdrop-blur-sm transition-all duration-300 ease-in-out"
+            className="w-full max-w-xl mx-auto bg-gradient-to-br from-orange-500/40 via-transparent to-transparent p-[1px] rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.1)] hover:shadow-[0_0_36px_-12px_rgba(249,115,22,0.35)] backdrop-blur-sm transition-all duration-300 ease-in-out"
           >
             <div
               className={cn(
-                "bg-black/50 rounded-[11px] h-full w-full p-5 sm:p-7 md:p-9 cursor-pointer border-2 border-transparent",
+                "bg-black/50 rounded-[11px] h-full w-full p-4 sm:p-6 md:p-7 cursor-pointer border-2 border-transparent",
                 "transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 isDragOver && 'scale-[1.02] border-dashed border-primary/40 bg-primary/10'
               )}
@@ -251,14 +251,11 @@ const HeroSection = ({
                       <Upload className="w-8 h-8 sm:w-10 sm:h-10 text-orange-500" />
                     </motion.div>
                     <div className="space-y-2">
-                      <h3 className="text-xl sm:text-2xl font-bold text-foreground">
+                      <h3 className="text-lg sm:text-xl font-semibold text-foreground">
                         {t('hero.upload.title')}
                       </h3>
-                      <p className="text-sm sm:text-base text-muted-foreground">
+                      <p className="text-sm text-muted-foreground">
                         {t('hero.upload.subtitle')}
-                      </p>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        {t('hero.upload.constraints')}
                       </p>
                     </div>
 
