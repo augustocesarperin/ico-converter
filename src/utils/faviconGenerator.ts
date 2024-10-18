@@ -7,6 +7,43 @@ export interface FaviconPackage {
   filename: string;
 }
 
+// Ensure we always export images in the exact requested size
+const renderToSizedBlob = (sourceCanvas: HTMLCanvasElement, size: number, type: 'image/png' | 'image/webp', quality?: number): Promise<Blob> => {
+  const target = document.createElement('canvas');
+  target.width = size;
+  target.height = size;
+  const ctx = target.getContext('2d');
+  return new Promise((resolve, reject) => {
+    try {
+      if (!ctx) {
+        reject(new Error('Failed to get 2D context'));
+        return;
+      }
+      ctx.imageSmoothingEnabled = true;
+      // @ts-ignore – not in lib.dom types across all TS versions
+      ctx.imageSmoothingQuality = 'high';
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(
+        sourceCanvas,
+        0,
+        0,
+        sourceCanvas.width,
+        sourceCanvas.height,
+        0,
+        0,
+        size,
+        size
+      );
+      target.toBlob((blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error('Failed to create blob'));
+      }, type, quality);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export const generateFaviconPackage = async (
   imageFile: File,
   icoBlob: Blob,
@@ -21,17 +58,16 @@ export const generateFaviconPackage = async (
 
   // Generate and add PNG files
   if (config.includePNG || config.generateFaviconPackage) {
-    const pngSizes = config.generateFaviconPackage 
-      ? [16, 32, 180, 192, 512] 
-      : config.selectedSizes;
+    // Quando pacote completo está ativo, sempre incluir (16,32,180,192,512)
+    // e também honrar os tamanhos selecionados pelo usuário (evitar duplicatas)
+    const base = config.generateFaviconPackage ? [16, 32, 180, 192, 512] : [];
+    const pngSizes = Array.from(new Set([...base, ...config.selectedSizes])).sort((a, b) => a - b);
 
     for (const size of pngSizes) {
       const resolution = resolutions.find(r => r.size === size);
-      const canvas = resolution ? resolution.canvas : resolutions[resolutions.length - 1].canvas; // Fallback to largest
-
-      const pngBlob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Failed to create PNG')), 'image/png');
-      });
+      const sourceCanvas = resolution ? resolution.canvas : resolutions[resolutions.length - 1].canvas; // Fallback to largest
+      // Always render to exact requested size to avoid mislabeled dimensions and tiny outputs
+      const pngBlob = await renderToSizedBlob(sourceCanvas, size, 'image/png');
       
       let pngFilename = `${filename}-${size}x${size}.png`;
       if (size === 180) pngFilename = 'apple-touch-icon.png';
@@ -39,6 +75,12 @@ export const generateFaviconPackage = async (
       if (size === 512) pngFilename = `android-chrome-512x512.png`;
 
       files.push({ name: pngFilename, blob: pngBlob, type: 'image/png' });
+      if ((import.meta as any).env?.DEV) {
+        try {
+          // Log per-file for quick manual verification
+          console.log(`[FaviconPackage] PNG ${pngFilename}: ${pngBlob.size} bytes`);
+        } catch {}
+      }
     }
   }
 
@@ -46,9 +88,7 @@ export const generateFaviconPackage = async (
   if (config.includeWebP) {
     for (const { size, canvas } of resolutions) {
       if (config.selectedSizes.includes(size)) {
-        const webpBlob = await new Promise<Blob>((resolve, reject) => {
-          canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Failed to create WebP')), 'image/webp', config.quality);
-        });
+        const webpBlob = await renderToSizedBlob(canvas, size, 'image/webp', config.quality);
         files.push({ name: `${filename}-${size}x${size}.webp`, blob: webpBlob, type: 'image/webp' });
       }
     }
@@ -83,6 +123,14 @@ export const generateFaviconPackage = async (
   zip.file('site.webmanifest', JSON.stringify(manifestJson, null, 2));
   zip.file('safari-pinned-tab.svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><path fill="#000" d="M20 4h24a16 16 0 0 1 16 16v24a16 16 0 0 1-16 16H20A16 16 0 0 1 4 44V20A16 16 0 0 1 20 4Z"/></svg>');
   const zipBlob = await zip.generateAsync({ type: 'blob' });
+
+  if ((import.meta as any).env?.DEV) {
+    try {
+      console.log('[FaviconPackage] Files included:');
+      for (const f of files) console.log(` - ${f.name}: ${f.blob.size} bytes`);
+      console.log(`[FaviconPackage] ZIP size: ${zipBlob.size} bytes`);
+    } catch {}
+  }
 
   return { files, htmlCode, zipBlob, filename };
 };
