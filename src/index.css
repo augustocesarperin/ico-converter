@@ -8,6 +8,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Utilities */
+.pixelated {
+  image-rendering: pixelated;
+}
+
 @layer base {
   :root {
     --background: 220 18% 5%;

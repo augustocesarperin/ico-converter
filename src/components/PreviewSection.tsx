@@ -7,10 +7,10 @@ import { formatFileSize } from '@/utils/fileUtils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useRef, useState, type ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const MotionButton = motion(Button);
+const MotionButton = motion.create(Button);
 
 interface PreviewSectionProps {
   processedImage: ProcessedImage;
@@ -21,6 +21,27 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
   const { toast } = useToast();
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [previewMode, setPreviewMode] = useState<'split' | 'light' | 'dark'>('split');
+
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  // Close popover when clicking outside or pressing Escape
+  useEffect(() => {
+    if (selectedSize === null) return;
+    const onDown = (e: MouseEvent) => {
+      if (gridRef.current && !gridRef.current.contains(e.target as Node)) {
+        setSelectedSize(null);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedSize(null);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [selectedSize]);
 
   const handleDownload = (type: 'ico' | 'zip') => {
     try {
@@ -51,7 +72,7 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
   };
 
   const getContextualUsage = (size: number) => {
-    const usageMap: { [key: number]: { icon: any; color: string } } = {
+    const usageMap: { [key: number]: { icon: ComponentType<{ className?: string }>; color: string } } = {
       16: { icon: Globe, color: "bg-blue-500/10 border-blue-500/20 text-blue-400" },
       32: { icon: Globe, color: "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" },
       48: { icon: Monitor, color: "bg-purple-500/10 border-purple-500/20 text-purple-400" },
@@ -179,7 +200,7 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
                   ].map(({ mode, label, icon: Icon }) => (
                     <button
                       key={mode}
-                      onClick={() => setPreviewMode(mode as any)}
+                      onClick={() => setPreviewMode(mode as 'split' | 'light' | 'dark')}
                       className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                         previewMode === mode 
                           ? 'bg-orange-500/20 text-orange-400 shadow-lg' 
@@ -200,7 +221,7 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
                     <p className="text-muted-foreground text-sm">{t('preview.grid.subtitle')}</p>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 justify-items-center">
+                  <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 justify-items-center pb-16">
                     {Object.entries(sizeCategories)
                       .flatMap(([category, resolutions]) => resolutions)
                       .sort((a, b) => a.size - b.size)
@@ -212,12 +233,12 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
                         return (
                           <motion.div
                             key={size}
-                            className={`relative group cursor-pointer w-full max-w-[120px] ${isSelected ? 'ring-2 ring-orange-500 ring-offset-2 ring-offset-black/50' : ''}`}
+                            className={`relative z-10 group cursor-pointer w-full max-w-[120px] ${isSelected ? 'ring-2 ring-orange-500 ring-offset-2 ring-offset-black/50' : ''}`}
                             onClick={() => setSelectedSize(isSelected ? null : size)}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                           >
-                            <div className="bg-black/40 border border-white/10 rounded-lg p-4 hover:border-orange-500/50 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-orange-500/10">
+                            <div className="bg-black/40 border border-white/10 rounded-lg p-4 hover:border-orange-500/50 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-orange-500/10 min-h-[210px]">
                               <div className="aspect-square rounded-md border border-white/10 overflow-hidden mb-3 bg-gradient-to-br from-white/5 to-transparent">
                                 {previewMode === 'split' ? (
                                   <div className="h-full grid grid-cols-2">
@@ -225,16 +246,14 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
                                       <img
                                         src={dataUrl}
                                         alt={`${size}x${size} light`}
-                                        className="max-w-full max-h-full transition-transform duration-300 group-hover:scale-110"
-                                        style={{ imageRendering: size <= 32 ? 'pixelated' : 'auto' }}
+                                        className={`max-w-full max-h-full transition-transform duration-300 group-hover:scale-110 ${size <= 32 ? 'pixelated' : ''}`}
                                       />
               </div>
                                     <div className="bg-checkerboard flex items-center justify-center p-2">
                                       <img
                                         src={dataUrl}
                                         alt={`${size}x${size} dark`}
-                                        className="max-w-full max-h-full transition-transform duration-300 group-hover:scale-110"
-                                        style={{ imageRendering: size <= 32 ? 'pixelated' : 'auto' }}
+                                        className={`max-w-full max-h-full transition-transform duration-300 group-hover:scale-110 ${size <= 32 ? 'pixelated' : ''}`}
                                       />
               </div>
             </div>
@@ -245,8 +264,7 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
                     <img
                       src={dataUrl}
                                       alt={`${size}x${size} preview`}
-                                      className="max-w-full max-h-full transition-transform duration-300 group-hover:scale-110"
-                      style={{ imageRendering: size <= 32 ? 'pixelated' : 'auto' }}
+                                      className={`max-w-full max-h-full transition-transform duration-300 group-hover:scale-110 ${size <= 32 ? 'pixelated' : ''}`}
                     />
                                   </div>
                                 )}
@@ -270,7 +288,7 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
                                   animate={{ opacity: 1, y: 0 }}
                                   exit={{ opacity: 0, y: 10 }}
                                   transition={{ duration: 0.2, ease: "easeOut" }}
-                                  className="absolute top-full left-0 right-0 z-10 mt-2 bg-black/95 border border-orange-500/50 rounded-lg p-3 backdrop-blur-sm"
+                                  className="absolute top-full left-1/2 -translate-x-1/2 z-50 mt-2 w-[260px] sm:w-[320px] md:w-[380px] bg-black/95 border border-orange-500/50 rounded-lg p-3 backdrop-blur-sm shadow-lg"
                                 >
                                   <div className="text-xs space-y-1">
                                     <p className="font-medium text-orange-400">{usage.description}</p>
