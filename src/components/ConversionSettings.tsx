@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Settings, ChevronDown } from 'lucide-react';
+import { Settings, ChevronDown, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
-const MotionButton = motion(Button);
+const MotionButton = motion.create(Button);
 
 interface ConversionSettingsProps {
   onSettingsChange: (settings: ConversionConfig) => void;
@@ -35,9 +35,11 @@ const AVAILABLE_SIZES = [16, 24, 32, 48, 64, 96, 128, 152, 192, 256, 512];
 
 const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSettingsProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [activePreset, setActivePreset] = useState<'website' | 'pwa' | 'windows' | null>(null);
   const { t } = useTranslation();
 
-  const updateSettings = (key: keyof ConversionConfig, value: any) => {
+  const updateSettings = (key: keyof ConversionConfig, value: ConversionConfig[keyof ConversionConfig]) => {
+    setActivePreset(null);
     onSettingsChange({ ...currentSettings, [key]: value });
   };
 
@@ -45,6 +47,7 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
     const newSizes = currentSettings.selectedSizes.includes(size)
       ? currentSettings.selectedSizes.filter(s => s !== size)
       : [...currentSettings.selectedSizes, size].sort((a, b) => a - b);
+    setActivePreset(null);
     updateSettings('selectedSizes', newSizes);
   };
 
@@ -83,40 +86,49 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
               <div className="px-3 sm:px-6 pt-4">
                 <div className="flex flex-wrap gap-2">
                   <Button
-                    variant="secondary"
+                    variant={activePreset === 'website' ? 'default' : 'secondary'}
                     size="sm"
-                    onClick={() => onSettingsChange({
-                      ...currentSettings,
-                      selectedSizes: [16, 32, 48, 64, 128, 256],
-                      generateFaviconPackage: true,
-                      includePNG: true,
-                      includeWebP: false,
-                      preserveAspectRatio: true,
-                    })}
+                    onClick={() => {
+                      onSettingsChange({
+                        ...currentSettings,
+                        selectedSizes: [16, 32, 48, 64, 128, 256],
+                        generateFaviconPackage: true,
+                        includePNG: true,
+                        includeWebP: false,
+                        preserveAspectRatio: true,
+                      });
+                      setActivePreset('website');
+                    }}
                   >{t('settings.presets.website') || 'Website'}</Button>
                   <Button
-                    variant="secondary"
+                    variant={activePreset === 'pwa' ? 'default' : 'secondary'}
                     size="sm"
-                    onClick={() => onSettingsChange({
-                      ...currentSettings,
-                      selectedSizes: [16, 32, 48, 64, 128, 256],
-                      generateFaviconPackage: true,
-                      includePNG: true,
-                      includeWebP: true,
-                      preserveAspectRatio: true,
-                    })}
+                    onClick={() => {
+                      onSettingsChange({
+                        ...currentSettings,
+                        selectedSizes: [16, 32, 48, 64, 128, 256],
+                        generateFaviconPackage: true,
+                        includePNG: true,
+                        includeWebP: true,
+                        preserveAspectRatio: true,
+                      });
+                      setActivePreset('pwa');
+                    }}
                   >{t('settings.presets.pwa') || 'PWA'}</Button>
                   <Button
-                    variant="secondary"
+                    variant={activePreset === 'windows' ? 'default' : 'secondary'}
                     size="sm"
-                    onClick={() => onSettingsChange({
-                      ...currentSettings,
-                      selectedSizes: [16, 24, 32, 48, 64, 128, 256],
-                      generateFaviconPackage: false,
-                      includePNG: false,
-                      includeWebP: false,
-                      preserveAspectRatio: true,
-                    })}
+                    onClick={() => {
+                      onSettingsChange({
+                        ...currentSettings,
+                        selectedSizes: [16, 24, 32, 48, 64, 128, 256],
+                        generateFaviconPackage: false,
+                        includePNG: false,
+                        includeWebP: false,
+                        preserveAspectRatio: true,
+                      });
+                      setActivePreset('windows');
+                    }}
                   >{t('settings.presets.windows') || 'Windows/Electron'}</Button>
                 </div>
               </div>
@@ -149,23 +161,41 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <Label>{t('settings.resolutions_label')}</Label>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label>{t('settings.resolutions_label')}</Label>
+                    <span className="text-xs text-muted-foreground">{currentSettings.selectedSizes.length} selected</span>
+                  </div>
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                     {AVAILABLE_SIZES.map((size) => (
                       <MotionButton
                         key={size}
-                        variant={currentSettings.selectedSizes.includes(size) ? 'secondary' : 'outline'}
+                        variant="outline"
                         onClick={() => toggleSize(size)}
-                        className="text-xs h-8"
+                        aria-pressed={currentSettings.selectedSizes.includes(size)}
+                        className={cn(
+                          'text-xs h-8 relative',
+                          currentSettings.selectedSizes.includes(size)
+                            ? 'bg-orange-600 text-white border-orange-500 hover:bg-orange-500 hover:text-white ring-1 ring-orange-500'
+                            : 'hover:border-orange-400'
+                        )}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95, y: 2 }}
                         transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                       >
-                        {size}x{size}
+                        <span className="inline-flex items-center gap-1">
+                          {currentSettings.selectedSizes.includes(size) && (
+                            <Check className="h-3 w-3" />
+                          )}
+                          {size}x{size}
+                        </span>
                       </MotionButton>
                     ))}
                   </div>
+                  
+                  <p className="text-xs text-muted-foreground">
+                    {t('settings.resolutions_hint', { defaultValue: 'Selected sizes go into the ICO. PNG/WebP in the ZIP follow the toggles below.' })}
+                  </p>
                 </div>
 
                 <div className="space-y-4">
@@ -256,7 +286,8 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
                           onSettingsChange({
                             ...currentSettings,
                             generateFaviconPackage: isChecked,
-                            includePNG: isChecked ? currentSettings.includePNG : false,
+                            // Ao habilitar o pacote, manter PNGs individuais ligados por padrão
+                            includePNG: isChecked ? true : false,
                             includeWebP: isChecked ? currentSettings.includeWebP : false,
                           });
                         }}
