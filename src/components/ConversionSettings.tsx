@@ -31,7 +31,7 @@ export interface ConversionConfig {
   smallIconStrength16: number;
 }
 
-const AVAILABLE_SIZES = [16, 24, 32, 48, 64, 96, 128, 152, 192, 256, 512];
+const AVAILABLE_SIZES = [16, 24, 32, 44, 48, 64, 96, 128, 150, 152, 192, 256, 512];
 
 const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSettingsProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -52,7 +52,7 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
   };
 
   return (
-    <div className={cn(
+    <div id="advanced-options" className={cn(
       "w-full max-w-xl sm:max-w-2xl mx-auto bg-gradient-to-br from-orange-500/40 via-transparent to-transparent p-[1px] rounded-xl backdrop-blur-sm transition-all duration-300 ease-in-out",
       "shadow-[0_0_30px_rgba(249,115,22,0.15)] hover:shadow-[0_0_45px_rgba(249,115,22,0.25)]",
       isExpanded && "shadow-[0_0_45px_rgba(249,115,22,0.3)]"
@@ -83,11 +83,12 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              <div className="px-3 sm:px-6 pt-4">
+              <div className="px-3 sm:px-6 pt-4 pb-3 sm:pb-4">
                 <div className="flex flex-wrap gap-2">
                   <Button
                     variant={activePreset === 'website' ? 'default' : 'secondary'}
                     size="sm"
+                    className="hover-focus-unified focus-visible-ring"
                     onClick={() => {
                       onSettingsChange({
                         ...currentSettings,
@@ -103,6 +104,7 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
                   <Button
                     variant={activePreset === 'pwa' ? 'default' : 'secondary'}
                     size="sm"
+                    className="hover-focus-unified focus-visible-ring"
                     onClick={() => {
                       onSettingsChange({
                         ...currentSettings,
@@ -118,10 +120,12 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
                   <Button
                     variant={activePreset === 'windows' ? 'default' : 'secondary'}
                     size="sm"
+                    className="hover-focus-unified focus-visible-ring"
                     onClick={() => {
                       onSettingsChange({
                         ...currentSettings,
-                        selectedSizes: [16, 24, 32, 48, 64, 128, 256],
+                        // Windows/Electron preset: inclui 44x44 e 150x150
+                        selectedSizes: [16, 24, 32, 44, 48, 64, 96, 128, 150, 256],
                         generateFaviconPackage: false,
                         includePNG: false,
                         includeWebP: false,
@@ -133,7 +137,7 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
                 </div>
               </div>
 
-              <div className="border-t border-white/10 p-3 sm:p-6 pt-4 space-y-6 sm:space-y-8">
+              <div className="border-t border-white/5 mt-1 p-3 sm:p-6 pt-4 space-y-6 sm:space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
                   <div className="space-y-3">
                     <Label htmlFor="filename">{t('settings.filename_label')}</Label>
@@ -174,10 +178,10 @@ const ConversionSettings = ({ onSettingsChange, currentSettings }: ConversionSet
                         onClick={() => toggleSize(size)}
                         aria-pressed={currentSettings.selectedSizes.includes(size)}
                         className={cn(
-                          'text-xs h-8 relative',
+                          'text-sm h-9 px-3 font-medium relative hover-focus-unified focus-visible-ring',
                           currentSettings.selectedSizes.includes(size)
-                            ? 'bg-orange-600 text-white border-orange-500 hover:bg-orange-500 hover:text-white ring-1 ring-orange-500'
-                            : 'hover:border-orange-400'
+                            ? 'bg-orange-500/20 text-orange-100 border-orange-400/40 hover:bg-orange-500/30 ring-1 ring-orange-400/40'
+                            : 'bg-black/30 border-white/15 text-foreground/90 hover:border-orange-400/40 hover:bg-white/5'
                         )}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95, y: 2 }}
