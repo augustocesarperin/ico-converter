@@ -20,7 +20,7 @@ const config = {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
+				sans: ['Manrope Variable','Manrope','Inter','system-ui','sans-serif'],
 			},
 			colors: {
 				border: "hsl(var(--border))",

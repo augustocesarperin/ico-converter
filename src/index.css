@@ -1,8 +1,9 @@
-@import "@fontsource/inter/300.css";
+/* Variable fonts (primary) */
+@import "@fontsource-variable/manrope/index.css";
+@import "@fontsource-variable/space-grotesk/index.css";
+/* Keep Inter as fallback for older browsers */
 @import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
 @import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
 
 @tailwind base;
 @tailwind components;
@@ -26,12 +27,14 @@
     --secondary: 220 13% 18%;
     --secondary-foreground: 0 0% 98%;
     --muted: 220 13% 18%;
-    --muted-foreground: 220 9% 55%;
+    /* Improve text contrast on dark background */
+    --muted-foreground: 220 9% 70%;
     --accent: 25 95% 53%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 13% 18%;
+    /* Slightly brighter borders for clearer separation */
+    --border: 220 13% 22%;
     --input: 220 13% 18%;
     --ring: 25 95% 53%;
     --radius: 0.75rem;
@@ -62,12 +65,12 @@
     --secondary: 220 13% 18%;
     --secondary-foreground: 0 0% 98%;
     --muted: 220 13% 18%;
-    --muted-foreground: 220 9% 55%;
+    --muted-foreground: 220 9% 70%;
     --accent: 25 95% 53%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 13% 18%;
+    --border: 220 13% 22%;
     --input: 220 13% 18%;
     --ring: 25 95% 53%;
     
@@ -94,10 +97,13 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-variation-settings: "wght" 450;
   }
 
   h1, h2, h3, h4, h5, h6 {
+    font-family: "Space Grotesk Variable", "Space Grotesk", system-ui, sans-serif;
     @apply font-semibold tracking-tight;
+    font-variation-settings: "wght" 600;
   }
 }
 
@@ -159,7 +165,18 @@
 
 @layer utilities {
   .focus-visible-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-shadow;
+  }
+
+  /* Unified hover/focus states for buttons and interactive pills */
+  .hover-focus-unified {
+    @apply transition-colors duration-200;
+  }
+  .hover-focus-unified:hover {
+    @apply border-primary/40 bg-primary/10 text-foreground;
+  }
+  .hover-focus-unified:focus-visible {
+    @apply ring-2 ring-ring ring-offset-2 ring-offset-background outline-none;
   }
 }
 
