@@ -58,10 +58,10 @@ const Index = () => {
   useEffect(() => {
     if (processedImage && resultsRef.current) {
       setTimeout(() => {
-        resultsRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        });
+        const el = resultsRef.current!;
+        const headerOffset = 140; // fixed header + breathing space
+        const y = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
       }, 200);
     }
   }, [processedImage]);
@@ -194,6 +194,15 @@ const Index = () => {
     setProgress(0);
     setCurrentStep('');
     setProcessingError('');
+    // Dar tempo para o usuário ajustar as configurações: rolar até as opções avançadas
+    setTimeout(() => {
+      const adv = document.getElementById('advanced-options');
+      if (adv) {
+        const headerOffset = 140;
+        const y = adv.getBoundingClientRect().top + window.scrollY - headerOffset;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+    }, 150);
   };
 
   return (

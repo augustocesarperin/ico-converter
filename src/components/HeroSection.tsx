@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import ProcessingProgress from './ProcessingProgress';
 import { validateImageFile, getErrorSuggestion } from '@/utils/fileValidation';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { motion, AnimatePresence, Variants, useReducedMotion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 interface HeroSectionProps {
@@ -137,19 +137,42 @@ const HeroSection = ({
     e.target.value = '';
   };
 
-
-  const titleContainerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.03 }
+  const openFileDialogWithReset = () => {
+    if (isProcessing || isRetrying) return;
+    if (hasProcessedImage) {
+      // Limpa preview local antes de abrir o seletor
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+      onReset();
+      // Não abre o seletor automaticamente: dá tempo para ajustar configurações
+    } else {
+      document.getElementById('file-input')?.click();
     }
   };
 
-  const letterVariant = {
+
+  const prefersReducedMotion = useReducedMotion();
+  const titleContainerVariants: Variants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 }
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: prefersReducedMotion ? 0 : 0.08,
+        delayChildren: prefersReducedMotion ? 0 : 0.2,
+      }
+    }
   };
+
+  const letterVariant: Variants = prefersReducedMotion ?
+    { hidden: { opacity: 0 }, visible: { opacity: 1 } } :
+    {
+      hidden: { opacity: 0, y: 8 },
+      visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+      }
+    };
 
   const titleText = t('hero.title');
   const smithIndex = titleText.indexOf('Smith');
@@ -216,11 +239,11 @@ const HeroSection = ({
               onDragOver={(e) => handleDragEvents(e, true)}
               onDragLeave={(e) => handleDragEvents(e, false)}
               onDrop={handleDrop}
-              onClick={() => !hasProcessedImage && document.getElementById('file-input')?.click()}
+              onClick={openFileDialogWithReset}
               onKeyDown={(e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !hasProcessedImage) {
+                if ((e.key === 'Enter' || e.key === ' ')) {
                   e.preventDefault();
-                  document.getElementById('file-input')?.click();
+                  openFileDialogWithReset();
                 }
               }}
             >
@@ -240,7 +263,7 @@ const HeroSection = ({
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.45 }}
                     className="space-y-4 sm:space-y-6"
                   >
                     <motion.div
@@ -292,7 +315,7 @@ const HeroSection = ({
                     key="success-content"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.45 }}
                     className="space-y-4 text-center"
                   >
                     <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-orange-500/10 flex items-center justify-center">
@@ -307,10 +330,10 @@ const HeroSection = ({
                       </p>
                     </div>
                     <Button 
-                      onClick={onReset}
-                      variant="outline"
+                      onClick={openFileDialogWithReset}
+                      variant="default"
                       size="sm"
-                      className="mt-4"
+                      className="mt-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg shadow-orange-500/25"
                     >
                       <RefreshCw className="mr-2 h-4 w-4" />
                       {t('hero.processing.reset_button')}
