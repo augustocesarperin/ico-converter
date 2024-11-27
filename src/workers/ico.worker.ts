@@ -1,4 +1,3 @@
-/// <reference lib="webworker" />
 export type WorkerStartMessage = {
   type: 'start'
   payload: {
@@ -9,9 +8,6 @@ export type WorkerStartMessage = {
       preserveAspectRatio: boolean
       backgroundTransparent: boolean
       backgroundColor: string
-      crispSmallIcons?: boolean
-      smallIconMode?: boolean
-      smallIconStrength16?: number
     }
   }
 }
@@ -19,7 +15,6 @@ export type WorkerStartMessage = {
 type WorkerProgressMessage = { type: 'progress'; payload: { progress: number; step: string } }
 type WorkerDoneMessage = { type: 'done'; payload: { icoBuffer: ArrayBuffer; pngs: { size: number; buffer: ArrayBuffer }[] } }
 type WorkerErrorMessage = { type: 'error'; payload: { message: string } }
-type WorkerMessage = WorkerProgressMessage | WorkerDoneMessage | WorkerErrorMessage
 
 const createIcoFile = (pngBuffers: { buffer: ArrayBuffer; size: number }[]): ArrayBuffer => {
   const iconCount = pngBuffers.length
@@ -51,13 +46,9 @@ const createIcoFile = (pngBuffers: { buffer: ArrayBuffer; size: number }[]): Arr
   return icoBuffer
 }
 
-const postMessageTyped = (msg: WorkerMessage) => {
-  (self as unknown as DedicatedWorkerGlobalScope).postMessage(msg)
-}
-
 const postProgress = (progress: number, step: string) => {
   const msg: WorkerProgressMessage = { type: 'progress', payload: { progress, step } }
-  postMessageTyped(msg)
+  ;(self as any).postMessage(msg)
 }
 
 self.onmessage = async (e: MessageEvent<WorkerStartMessage>) => {
@@ -78,7 +69,7 @@ self.onmessage = async (e: MessageEvent<WorkerStartMessage>) => {
       })
       const c = new OffscreenCanvas(img.width || 1024, img.height || 1024)
       const cx = c.getContext('2d')!
-      cx.drawImage(img as unknown as CanvasImageSource, 0, 0)
+      cx.drawImage(img as any, 0, 0)
       imageBitmap = c.transferToImageBitmap()
       URL.revokeObjectURL(url)
     }
@@ -163,7 +154,7 @@ self.onmessage = async (e: MessageEvent<WorkerStartMessage>) => {
       let curCanvas = new OffscreenCanvas(curW, curH)
       let curCtx = curCanvas.getContext('2d')!
       curCtx.imageSmoothingEnabled = true
-      ;(curCtx as unknown as { imageSmoothingQuality?: string }).imageSmoothingQuality = 'high'
+      ;(curCtx as any).imageSmoothingQuality = 'high'
       curCtx.clearRect(0, 0, curW, curH)
       curCtx.drawImage(bitmap, 0, 0)
       while (curW / 2 >= targetW && curH / 2 >= targetH) {
@@ -172,7 +163,7 @@ self.onmessage = async (e: MessageEvent<WorkerStartMessage>) => {
         const nextCanvas = new OffscreenCanvas(nextW, nextH)
         const nextCtx = nextCanvas.getContext('2d')!
         nextCtx.imageSmoothingEnabled = true
-        ;(nextCtx as unknown as { imageSmoothingQuality?: string }).imageSmoothingQuality = 'high'
+        ;(nextCtx as any).imageSmoothingQuality = 'high'
         nextCtx.drawImage(curCanvas, 0, 0, curW, curH, 0, 0, nextW, nextH)
         curCanvas = nextCanvas
         curCtx = nextCtx
@@ -191,7 +182,7 @@ self.onmessage = async (e: MessageEvent<WorkerStartMessage>) => {
       const k = [0,-1,0,-1,5,-1,0,-1,0]
       for (let y=0;y<h;y++){
         for (let x=0;x<w;x++){
-          let acc=0; const idx=y*w+x
+          let acc=0, idx=y*w+x
           for (let cy=-1; cy<=1; cy++){
             const yy=Math.min(h-1, Math.max(0, y+cy))
             for (let cx=-1; cx<=1; cx++){
@@ -271,11 +262,7 @@ self.onmessage = async (e: MessageEvent<WorkerStartMessage>) => {
       // Choose source bitmap (cropped for small sizes to avoid excessive transparency padding)
       let srcBitmap: ImageBitmap = imageBitmap
       if (size <= 32 && (trimRect.sw > 0 && trimRect.sh > 0)) {
-        try {
-          srcBitmap = await createImageBitmap(imageBitmap, trimRect.sx, trimRect.sy, trimRect.sw, trimRect.sh)
-        } catch (_err) {
-          // keep original bitmap if crop fails
-        }
+        try { srcBitmap = await createImageBitmap(imageBitmap, trimRect.sx, trimRect.sy, trimRect.sw, trimRect.sh) } catch {}
       }
 
       if (options.preserveAspectRatio) {
@@ -288,12 +275,12 @@ self.onmessage = async (e: MessageEvent<WorkerStartMessage>) => {
         dy = Math.floor((size - destH) / 2)
       }
       ctx.imageSmoothingEnabled = true
-      ctx.imageSmoothingQuality = 'high'
-      if (size <= 32 && (options as unknown as { crispSmallIcons?: boolean }).crispSmallIcons !== false) {
+      ;(ctx as any).imageSmoothingQuality = 'high'
+      if (size <= 32 && (options as any).crispSmallIcons !== false) {
         const stepCanvas = downscaleInSteps(srcBitmap, destW, destH)
-        if (size <= 16) { ctx.imageSmoothingEnabled = false; ctx.imageSmoothingQuality = 'low' }
-        ctx.drawImage(stepCanvas, 0, 0, (stepCanvas as OffscreenCanvas).width, (stepCanvas as OffscreenCanvas).height, dx, dy, destW, destH)
-        ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'
+        if (size <= 16) { ctx.imageSmoothingEnabled = false as any; (ctx as any).imageSmoothingQuality = 'low' }
+        ctx.drawImage(stepCanvas, 0, 0, (stepCanvas as any).width, (stepCanvas as any).height, dx, dy, destW, destH)
+        ctx.imageSmoothingEnabled = true; (ctx as any).imageSmoothingQuality = 'high'
       } else {
         ctx.drawImage(imageBitmap, trimRect.sx, trimRect.sy, trimRect.sw, trimRect.sh, dx, dy, destW, destH)
       }
@@ -324,31 +311,30 @@ self.onmessage = async (e: MessageEvent<WorkerStartMessage>) => {
       if (size <= 32) {
         let data = ctx.getImageData(0, 0, size, size)
         if (size <= 16) data = alphaQuantize(data, 60)
-        const strength = Math.max(0, Math.min(2, (options as unknown as { smallIconStrength16?: number }).smallIconStrength16 ?? 1.2))
-        if ((options as unknown as { smallIconMode?: boolean }).smallIconMode && size <= 16) {
+        const strength = Math.max(0, Math.min(2, (options as any).smallIconStrength16 ?? 1.2))
+        if ((options as any).smallIconMode && size <= 16) {
           for (let k = 0; k < Math.round(strength); k++) data = dilate1px(data)
         }
         const s = size <= 16 ? 0.28 + 0.1 * strength : 0.22
         luminanceSharpen(data, s, size <= 16 ? 4 : 6, 1.08)
         if (size <= 16){
           const avg = meanLuminance(data)
-          const outline: [number, number, number, number] = avg < 100 ? [255,255,255,170] as [number,number,number,number] : [0,0,0,170] as [number,number,number,number]
-          addOutline(data, outline)
+          const outline = avg < 100 ? [255,255,255,170] : [0,0,0,170]
+          addOutline(data, outline as any)
         }
         ctx.putImageData(data, 0, 0)
       }
-      const pngBlob = await canvas.convertToBlob({ type: 'image/png' })
+      const pngBlob = await (canvas as any).convertToBlob({ type: 'image/png' })
       const buf = await pngBlob.arrayBuffer()
       pngs.push({ size, buffer: buf })
     }
     postProgress(90, 'Gerando ICO')
     const icoBuffer = createIcoFile(pngs.map(p => ({ buffer: p.buffer, size: p.size })))
     const msg: WorkerDoneMessage = { type: 'done', payload: { icoBuffer, pngs } }
-    ;(self as unknown as DedicatedWorkerGlobalScope).postMessage(msg, [icoBuffer, ...pngs.map(p => p.buffer)])
-  } catch (err) {
-    const message = (err instanceof Error) ? err.message : 'Worker error'
-    const msg: WorkerErrorMessage = { type: 'error', payload: { message } }
-    postMessageTyped(msg)
+    ;(self as any).postMessage(msg, [icoBuffer, ...pngs.map(p => p.buffer)])
+  } catch (err: any) {
+    const msg: WorkerErrorMessage = { type: 'error', payload: { message: err?.message || 'Worker error' } }
+    ;(self as any).postMessage(msg)
   }
 }
 
