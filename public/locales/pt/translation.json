@@ -1,10 +1,10 @@
 {
   "features": {
     "title": "Recursos",
-    "subtitle": "",
-    "fast_processing": {
-      "title": "Rápido",
-      "description": "Conversão em segundos."
+    "subtitle": "Gerador completo de ícones: ICO/PNG/WebP, PWA e assets do Windows",
+    "png_to_ico": {
+      "title": "Conversor PNG/JPG/SVG para ICO",
+      "description": "Multi‑tamanho 16–256 px."
     },
     "privacy": {
       "title": "Privado",
@@ -12,11 +12,23 @@
     },
     "resolutions": {
       "title": "Múltiplas resoluções",
-      "description": "Gera 16, 32, 48, 64, 128 e 256 px."
+      "description": "Gera 16–256 px (multi‑tamanho)."
     },
     "download": {
       "title": "Download imediato",
-      "description": "Baixe o .ico ou o pacote completo."
+      "description": "Baixe ICO, pacote e assets do Windows."
+    },
+    "windows_assets": {
+      "title": "Windows Store assets",
+      "description": "targetsize 16–96 (inclui 20/24), tiles e StoreLogo; com unplated e nomes canônicos."
+    },
+    "pwa_ready": {
+      "title": "PWA pronto",
+      "description": "Inclui manifest e apple‑touch‑icon automaticamente."
+    },
+    "organized_zip": {
+      "title": "ZIP organizado",
+      "description": "Assets/Taskbar, Assets/Tiles e Assets/StoreLogo."
     }
   },
   "about": {
@@ -56,7 +68,7 @@
   },
   "hero": {
     "title": "IcoSmith",
-    "description": "Converta PNG, JPG/JPEG, SVG, WebP, AVIF ou BMP para .ICO",
+    "description": "Gerador e conversor de favicon: PNG/JPG/SVG → ICO (16–256), pacote PWA (manifest + apple‑touch‑icon) e assets do Windows Store (taskbar/tiles/StoreLogo).",
     "formats": "Suporta: PNG, JPG/JPEG, SVG, WebP, AVIF e BMP.",
     "features": {
       "free": "Sem limites",
@@ -184,19 +196,98 @@
     "filename_label": "Nome do arquivo base",
     "quality_label": "Qualidade da imagem",
     "resolutions_label": "Resoluções do .ico (selecione as desejadas)",
+    "preserve_aspect_label": "Preservar proporção (letterbox)",
     "crisp_small_label": "Realçar 16px/32px (multi‑etapas + nitidez)",
     "small_icon_mode_label": "Modo ícone pequeno (engrossar 1px em 16/32)",
     "small_icon_strength_label": "Força para 16px",
-    "package_label": "Pacote de Favicon Completo",
+    "background_label": "Fundo",
+    "background_transparent": "Transparente",
+    "package_label": "Exportar para",
+    "export": {
+      "web": "Website/PWA",
+      "windows": "Windows",
+      "both": "Ambos"
+    },
+    "output_label": "Saída:",
+    "output": {
+      "web": "Website/PWA (favicon.ico, apple-touch-icon, site.webmanifest, safari-pinned-tab.svg, PNGs)",
+      "windows": "Windows (taskbar targetsize 16–48/96, Square150/Wide310/Square310, StoreLogo)",
+      "both": "Website/PWA + Windows (todos os arquivos)",
+      "web_short": "Website/PWA",
+      "windows_short": "Windows",
+      "both_short": "Ambos (Site + Windows)"
+    },
     "presets": {
       "website": "Website",
       "pwa": "PWA",
-      "windows": "Windows/Electron"
+      "windows": "Windows/Electron",
+      "windows_store": "Windows Store"
+    },
+    "presets_extra": {
+      "compat": "Compatível (suave)",
+      "compat_desc": "Reamostragem lisa sem nitidez/outline no 16/32/48"
     },
     "package_option": {
-      "generate": "Gerar pacote completo (com `manifest` e `apple-touch-icon`)",
+      "generate": "Website/PWA (pacote)",
       "include_png": "Incluir arquivos PNG individuais no .zip",
-      "include_webp": "Incluir formato WebP (experimental)"
+      "include_webp": "Incluir formato WebP (experimental)",
+      "windows_assets": "Windows (assets)"
+    },
+    "reset_defaults": "Restaurar padrão",
+    "small_icon_profile_label": "Qualidade dos ícones pequenos (16/32)",
+    "small_icon_profile": {
+      "neutral": "Neutro",
+      "sharp": "Nítido",
+      "soft": "Suave",
+      "neutral_hint": "Padrão. Balanceado, sem realce extra.",
+      "sharp_hint": "Realça bordas/contraste. Bom para logos grossas.",
+      "soft_hint": "Atenua e preserva traços finos. Bom para logos finas."
     }
+  },
+  "tabs": { "windows": "Windows" },
+  "windows": {
+    "info": "Assets de taskbar e Store do Windows são incluídos quando ativados nas opções.",
+    "download_assets_only": "Baixar apenas assets do Windows",
+    "advanced": "Avançado (Windows)",
+    "profile_min": "Minimal",
+    "profile_rec": "Recommended",
+    "profile_full": "Complete"
+  },
+  "hints": {
+    "small_icons": {
+      "thin": "No 16/32px pareceu fino. Experimente o perfil Nítido.",
+      "bold": "No 16/32px pareceu pesado. Experimente o perfil Suave."
+    },
+    "buttons": {
+      "try_sharp": "Usar perfil Nítido",
+      "try_soft": "Usar perfil Suave"
+    }
+  },
+  "hints.post_result": {
+    "not_satisfied": "Não ficou como você queria? Ajuste as configurações e tente novamente.",
+    "open_settings": "Ajustar configurações",
+    "retry": "Tentar novamente"
+  },
+  "tips": {
+    "preset_recommend": {
+      "title": "Recomendado: PWA",
+      "desc": "Imagem grande detectada. Deseja aplicar o preset PWA (192/512 + manifest)?",
+      "title_win": "Recomendado: Windows",
+      "desc_win": "Você usou Windows/Electron recentemente. Deseja manter este preset?"
+    }
+  },
+  "tooltips": {
+    "auto_profile": "Ajuste automático para 16–96 px",
+    "crisp_small": "Downscale em etapas (16/32)",
+    "outline16": "Contorno no 16 px",
+    "small_icon_mode": "Micro‑engrossar 1px no 16",
+    "windows_canonical": "Gerar nomes VS (Square150x150Logo.png etc.)",
+    "windows_organize": "Subpastas Assets/Taskbar, Assets/Tiles, Assets/StoreLogo"
+  },
+  "common": {
+    "edit": "Editar",
+    "done": "Pronto",
+    "hide": "Ocultar",
+    "expand": "Expandir"
   }
-} 
+}

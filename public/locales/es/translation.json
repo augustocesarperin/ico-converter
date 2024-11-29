@@ -16,7 +16,8 @@
   },
   "hero": {
     "title": "IcoSmith",
-    "description": "Convierte imágenes a .ICO — procesado en tu navegador. Rápido y privado.",
+    "description": "Generador y conversor de favicon: PNG/JPG/SVG → ICO (16–256), paquete PWA (manifest + apple‑touch‑icon) y assets de Windows Store (taskbar/tiles/StoreLogo).",
+    "formats": "Soporta: PNG, JPG/JPEG, SVG, WebP, AVIF y BMP.",
     "features": {
       "free": "Sin límites",
       "private": "Procesamiento local",
@@ -28,29 +29,266 @@
       "constraints": "Soporta PNG, JPG/JPEG, SVG, WebP, AVIF y BMP • hasta 50 MB",
       "aria_label": "Seleccionar archivo de imagen",
       "preview": "Previsualización"
-    }
+    },
+    "processing": {
+      "success_title": "¡Procesamiento completado!",
+      "success_subtitle": "Tus iconos están listos para descargar",
+      "retry_button": "Reintentar",
+      "reset_button": "Convertir otra imagen",
+      "retrying_step": "Reintentando..."
+    },
+    "errors": {
+      "validation": {
+        "invalid_file": "Archivo inválido.",
+        "unexpected": "Error inesperado durante la validación. Inténtalo de nuevo.",
+        "file_type": "Formato no soportado. Usa: {{allowedTypes}}",
+        "file_size": "Archivo demasiado grande ({{currentSize}}MB). Máximo permitido: {{maxSize}}MB",
+        "dimensions_too_small": "Imagen demasiado pequeña ({{currentWidth}}×{{currentHeight}}px). Mínimo: {{minWidth}}×{{minHeight}}px",
+        "dimensions_too_large": "Imagen demasiado grande ({{currentWidth}}×{{currentHeight}}px). Máximo: {{maxWidth}}×{{maxHeight}}px",
+        "corrupted": "Archivo dañado o formato inválido. Prueba con otra imagen.",
+        "network": "Error de red. Verifica tu conexión e inténtalo de nuevo.",
+        "unknown": "Error inesperado. Inténtalo de nuevo o usa otro archivo.",
+        "rate_limit": "Demasiadas subidas en poco tiempo. Espera un momento.",
+        "processing_timeout": "El procesamiento tardó demasiado. Prueba con una imagen más pequeña.",
+        "svg_too_large": "Archivo SVG demasiado grande (máximo 5MB)",
+        "svg_too_complex": "SVG demasiado complejo (máximo 5000 elementos)",
+        "svg_too_nested": "SVG con demasiados niveles de anidamiento (máximo 50)"
+      },
+      "suggestions": {
+        "file_type": "Intenta convertir tu imagen a PNG o JPG.",
+        "file_size": "Redimensiona o comprime la imagen para reducir su tamaño.",
+        "dimensions_too_small": "Usa una imagen con mayor resolución.",
+        "dimensions_too_large": "Redimensiona la imagen a menos de 4096x4096 px.",
+        "corrupted": "El archivo parece dañado. Intenta exportarlo de nuevo.",
+        "svg_too_large": "Usa un editor SVG para reducir el tamaño del archivo.",
+        "svg_too_complex": "Simplifica el SVG eliminando elementos innecesarios.",
+        "svg_too_nested": "Reduce el nivel de anidamiento de los elementos SVG.",
+        "generic": "Intenta recargar la página o usar otro archivo."
+      },
+      "processing": {
+        "generic_title": "Ocurrió un error",
+        "generic_suggestion": "Parece que algo salió mal. Inténtalo de nuevo."
+      }
+    },
+    "warnings": { "title": "Avisos" }
   },
   "features": {
     "title": "Recursos",
-    "subtitle": "",
-    "fast_processing": { "title": "Rápido", "description": "Conversión en segundos." },
-    "privacy": { "title": "Privado", "description": "Los archivos no salen de tu dispositivo." },
-    "resolutions": { "title": "Varios tamaños", "description": "Genera 16, 32, 48, 64, 128 y 256 px." },
-    "download": { "title": "Descarga inmediata", "description": "Descarga el .ico o el paquete completo." }
+    "subtitle": "Generador completo: ICO/PNG/WebP, PWA y assets de Windows",
+    "png_to_ico": {
+      "title": "PNG/JPG/SVG → ICO",
+      "description": "16–256 px (multi‑tamaño)."
+    },
+    "privacy": {
+      "title": "Privado",
+      "description": "Los archivos no salen de tu dispositivo."
+    },
+    "resolutions": {
+      "title": "Varios tamaños",
+      "description": "Genera 16, 32, 48, 64, 128 y 256 px."
+    },
+    "download": {
+      "title": "Descarga inmediata",
+      "description": "Descarga ICO, paquete completo y assets de Windows."
+    },
+    "windows_assets": {
+      "title": "Windows Store assets",
+      "description": "targetsize 16–96 (incluye 20/24), tiles y StoreLogo; con unplated y nombres canónicos."
+    },
+    "pwa_ready": {
+      "title": "PWA listo",
+      "description": "Incluye manifest y apple‑touch‑icon automáticamente."
+    },
+    "organized_zip": {
+      "title": "ZIP organizado",
+      "description": "Assets/ con subcarpetas: Taskbar, Tiles y StoreLogo."
+    }
   },
   "about": {
     "title": "Acerca de",
     "description": "IcoSmith es una herramienta para generar .ICO a partir de PNG, JPG/JPEG, SVG, WebP, AVIF y BMP. Todo en el navegador.",
-    "open_source": { "title": "Código abierto (MIT)", "description": "Código en GitHub. Puedes auditar y contribuir." },
-    "privacy": { "title": "Procesamiento local", "description": "La conversión ocurre en tu navegador." }
+    "free": {
+      "title": "Gratuito",
+      "description": "Sin cuentas. Sin límites."
+    },
+    "open_source": {
+      "title": "Código abierto (MIT)",
+      "description": "Código en GitHub. Puedes auditar y contribuir."
+    },
+    "privacy": {
+      "title": "Procesamiento local",
+      "description": "La conversión ocurre en tu navegador."
+    }
+  },
+  "preview": {
+    "title": "¡Conversión completada!",
+    "subtitle": "Tu favicon está listo para usar",
+    "processing_details": "Procesado en alta calidad • {{count}} resoluciones",
+    "download": {
+      "ico_button": "Solo ICO ({{size}})",
+      "zip_button": "Descargar paquete completo ({{size}})",
+      "ico_button_simple": "Descargar ICO ({{size}})",
+      "toast": {
+        "ico_started": "¡Descarga de ICO iniciada!",
+        "zip_started": "¡Descarga del paquete ZIP iniciada!",
+        "error_title": "Error de descarga",
+        "error_description": "No se pudo descargar el archivo."
+      }
+    },
+    "tabs": {
+      "preview": "Vista interactiva",
+      "details": "Detalles técnicos"
+    },
+    "preview_modes": {
+      "split": "Comparación",
+      "light": "Fondo claro",
+      "dark": "Fondo oscuro"
+    },
+    "grid": {
+      "title": "Vista previa de iconos",
+      "subtitle": "Haz clic en cualquier icono para ver detalles de uso"
+    },
+    "details": {
+      "title": "Detalles de la resolución seleccionada",
+      "no_selection": "Selecciona un icono para ver los detalles",
+      "size": "Tamaño",
+      "usage": "Uso común",
+      "html_code": "Código HTML",
+      "copy_button": "Copiar",
+      "copied_toast": "¡Código copiado al portapapeles!",
+      "tech_info": {
+        "title": "Información técnica",
+        "original_name": "Nombre original",
+        "original_size": "Tamaño original",
+        "original_dimensions": "Dimensiones originales",
+        "generated_icons": "Iconos generados"
+      }
+    },
+    "usage": {
+      "16": { "name": "Favicon", "description": "Pestaña del navegador" },
+      "32": { "name": "Favoritos", "description": "Barra de favoritos" },
+      "48": { "name": "Escritorio", "description": "Acceso directo" },
+      "64": { "name": "Aplicaciones", "description": "Lista de apps" },
+      "128": { "name": "Instalación", "description": "Pantalla de instalación" },
+      "256": { "name": "Alta resolución", "description": "Pantallas Retina" },
+      "default": { "name": "Personalizado", "description": "Uso personalizado" }
+    }
   },
   "footer": {
     "copyright": "Abstratus Labs\nAugusto César Perin",
     "source_code": "Código fuente disponible en GitHub"
+  },
+  "settings": {
+    "package_label": "Exportar a",
+    "export": {
+      "web": "Sitio/PWA",
+      "windows": "Windows",
+      "both": "Ambos"
+    },
+    "output_label": "Salida:",
+    "output": {
+      "web": "Sitio/PWA (favicon.ico, apple-touch-icon, site.webmanifest, safari-pinned-tab.svg, PNGs)",
+      "windows": "Windows (taskbar targetsize 16–48/96, Square150/Wide310/Square310, StoreLogo)",
+      "both": "Sitio/PWA + Windows (todos los archivos)",
+      "web_short": "Sitio/PWA",
+      "windows_short": "Windows",
+      "both_short": "Ambos (Sitio + Windows)"
+    },
+    "title": "Opciones avanzadas",
+    "filename_label": "Nombre base del archivo",
+    "quality_label": "Calidad de imagen",
+    "resolutions_label": "Resoluciones del .ico (selecciona las deseadas)",
+    "preserve_aspect_label": "Conservar proporción (letterbox)",
+    "presets": {
+      "website": "Sitio web",
+      "pwa": "PWA",
+      "windows": "Windows/Electron",
+      "windows_store": "Windows Store"
+    },
+    "presets_extra": {
+      "compat": "Compatible (suave)",
+      "compat_desc": "Re-muestreo suave sin sharpen/outline en 16/32/48"
+    },
+    "crisp_small_label": "Mejor nitidez 16px/32px (multi‑pasos + sharpen)",
+    "small_icon_mode_label": "Modo ícono pequeño (engrosar 1px en 16/32)",
+    "small_icon_strength_label": "Fuerza para 16px",
+    "background_label": "Fondo",
+    "background_transparent": "Transparente",
+    "package_option": {
+      "generate": "Sitio/PWA (paquete)",
+      "include_png": "Incluir archivos PNG individuales en el .zip",
+      "include_webp": "Incluir formato WebP (experimental)",
+      "windows_assets": "Windows (assets)"
+    }
+  },
+  "processing": {
+    "starting": "Iniciando...",
+    "processing_worker": "Procesando en worker...",
+    "generating_package": "Generando paquete completo...",
+    "package_info": " + {{count}} archivos extra",
+    "success_toast_title": "¡Conversión completada!",
+    "success_toast_description": "ICO creado con {{count}} resoluciones{{packageInfo}}",
+    "error_toast_title": "Error en la conversión",
+    "error_toast_description": "Intenta de nuevo con un archivo PNG o JPG válido",
+    "unknown_error": "Error desconocido"
+  },
+  "tabs": { "windows": "Windows" },
+  "windows": {
+    "info": "Los assets de taskbar y Store de Windows se incluyen cuando están activados en opciones.",
+    "download_assets_only": "Descargar solo assets de Windows"
+  }
+  ,
+  "hints": {
+    "small_icons": {
+      "thin": "En 16/32px se ve delgado. Prueba el perfil Nítido.",
+      "bold": "En 16/32px se ve pesado. Prueba el perfil Suave."
+    },
+    "buttons": {
+      "try_sharp": "Usar perfil Nítido",
+      "try_soft": "Usar perfil Suave"
+    }
+  }
+  ,
+  "hints.post_result": {
+    "not_satisfied": "¿No quedó como querías? Ajusta la configuración y vuelve a intentar.",
+    "open_settings": "Ajustar configuración",
+    "retry": "Intentar de nuevo"
+  }
+  ,
+  "tips": {
+    "preset_recommend": {
+      "title": "Recomendado: PWA",
+      "desc": "Imagen grande detectada. ¿Aplicar preset PWA (192/512 + manifest)?",
+      "title_win": "Recomendado: Windows",
+      "desc_win": "Usaste Windows/Electron recientemente. ¿Mantener este preset?"
+    }
+  }
+  ,
+  "tooltips": {
+    "auto_profile": "Ajuste automático para 16–96 px",
+    "crisp_small": "Reducción por pasos (16/32)",
+    "outline16": "Contorno en 16 px",
+    "small_icon_mode": "Engrosar 1px en 16",
+    "windows_canonical": "Generar nombres de VS (Square150x150Logo.png, etc.)",
+    "windows_organize": "Subcarpetas Assets/Taskbar, Assets/Tiles, Assets/StoreLogo"
   }
 }
-
-
-
-
-
+,
+"common": {
+  "edit": "Editar",
+  "done": "Listo",
+  "hide": "Ocultar",
+  "expand": "Expandir"
+}
+,
+"settings_extra": {
+  "small_icon_profile_label": "Calidad de iconos pequeños (16/32)",
+  "small_icon_profile": {
+    "neutral": "Neutro",
+    "sharp": "Nítido",
+    "soft": "Suave",
+    "neutral_hint": "Predeterminado. Balanceado, sin realce extra.",
+    "sharp_hint": "Realza bordes/contraste. Para logos gruesos.",
+    "soft_hint": "Atenúa y preserva trazos finos. Para logos delicados."
+  }
+}

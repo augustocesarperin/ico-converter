@@ -1,10 +1,10 @@
 {
   "features": {
     "title": "Resources",
-    "subtitle": "",
-    "fast_processing": {
-      "title": "Fast Processing",
-      "description": "Instant conversion in your browser, no server uploads"
+    "subtitle": "Full icon generator: ICO/PNG/WebP, PWA and Windows assets",
+    "png_to_ico": {
+      "title": "PNG/JPG/SVG to ICO converter",
+      "description": "Multi-size 16–256 px."
     },
     "privacy": {
       "title": "Total Privacy",
@@ -16,7 +16,19 @@
     },
     "download": {
       "title": "Instant Download",
-      "description": "Download your ready-to-use ICO file in seconds"
+      "description": "Download ICO, full package and Windows assets"
+    },
+    "windows_assets": {
+      "title": "Windows Store assets",
+      "description": "targetsize 16–96 (incl. 20/24), tiles and StoreLogo; with unplated and canonical names."
+    },
+    "pwa_ready": {
+      "title": "PWA ready",
+      "description": "Includes manifest and apple‑touch‑icon automatically."
+    },
+    "organized_zip": {
+      "title": "Organized ZIP",
+      "description": "Assets/ subfolders: Taskbar, Tiles and StoreLogo."
     }
   },
   "about": {
@@ -56,7 +68,8 @@
   },
   "hero": {
     "title": "IcoSmith",
-    "description": "Convert PNG, JPG/JPEG, SVG, WebP, AVIF or BMP to .ICO",
+    "description": "Favicon generator and converter: PNG/JPG/SVG → ICO (16–256), PWA package (manifest + apple‑touch‑icon) and Windows Store assets (taskbar/tiles/StoreLogo).",
+    "formats": "Supports: PNG, JPG/JPEG, SVG, WebP, AVIF and BMP.",
     "features": {
       "free": "Unlimited",
       "private": "Private & Secure",
@@ -88,7 +101,10 @@
         "network": "Network error. Please check your connection and try again.",
         "unknown": "Unexpected error. Please try again or use another file.",
         "rate_limit": "Too many uploads in a short time. Please wait a moment.",
-        "processing_timeout": "Processing took too long. Please try with a smaller image."
+        "processing_timeout": "Processing took too long. Please try with a smaller image.",
+        "svg_too_large": "SVG file too large (max 5MB).",
+        "svg_too_complex": "SVG too complex (max 5000 elements).",
+        "svg_too_nested": "SVG has too many nesting levels (max 50)."
       },
       "suggestions": {
         "file_type": "Try converting your image to PNG or JPG.",
@@ -96,6 +112,9 @@
         "dimensions_too_small": "Use an image with a higher resolution.",
         "dimensions_too_large": "Resize the image to be smaller than 4096x4096px.",
         "corrupted": "The file seems to be damaged. Try exporting it again.",
+        "svg_too_large": "Use an SVG editor to reduce the file size.",
+        "svg_too_complex": "Simplify the SVG by removing unnecessary elements.",
+        "svg_too_nested": "Reduce the nesting level of SVG elements.",
         "generic": "Try reloading the page or using a different file."
       },
       "processing": {
@@ -183,16 +202,89 @@
     "small_icon_strength_label": "Strength for 16px",
     "background_label": "Raster background",
     "background_transparent": "Transparent",
-    "package_label": "Full Favicon Package",
+    "package_label": "Export to",
+    "export": {
+      "web": "Website/PWA",
+      "windows": "Windows",
+      "both": "Both"
+    },
+    "output_label": "Output:",
+    "output": {
+      "web": "Website/PWA (favicon.ico, apple-touch-icon, site.webmanifest, safari-pinned-tab.svg, PNGs)",
+      "windows": "Windows (taskbar targetsize 16–48/96, Square150/Wide310/Square310, StoreLogo)",
+      "both": "Website/PWA + Windows (all files)",
+      "web_short": "Website/PWA",
+      "windows_short": "Windows",
+      "both_short": "Both (Site + Windows)"
+    },
     "presets": {
       "website": "Website",
       "pwa": "PWA",
-      "windows": "Windows/Electron"
+      "windows": "Windows/Electron",
+      "windows_store": "Windows Store"
+    },
+    "presets_extra": {
+      "compat": "Compatible (soft)",
+      "compat_desc": "Smooth resampling without sharpen/outline at 16/32/48"
     },
     "package_option": {
-      "generate": "Generate full package (with `manifest` and `apple-touch-icon`)",
+      "generate": "Website/PWA (package)",
       "include_png": "Include individual PNG files in .zip",
-      "include_webp": "Include WebP format (experimental)"
+      "include_webp": "Include WebP format (experimental)",
+      "windows_assets": "Windows (assets)"
     }
+  },
+  "tabs": { "windows": "Windows" },
+  "windows": {
+    "info": "Windows taskbar and Store assets are included when enabled in options.",
+    "download_assets_only": "Download Windows assets only"
+  },
+  "common": {
+    "edit": "Edit",
+    "done": "Done",
+    "hide": "Hide",
+    "expand": "Expand"
+  },
+  "settings": {
+    "small_icon_profile_label": "Small icons quality (16/32)",
+    "small_icon_profile": {
+      "neutral": "Neutral",
+      "sharp": "Sharp",
+      "soft": "Soft",
+      "neutral_hint": "Default. Balanced, no extra enhancing.",
+      "sharp_hint": "Boost edges/contrast. Good for bold logos.",
+      "soft_hint": "Soften and preserve thin strokes. Good for fine logos."
+    }
+  },
+  "hints": {
+    "small_icons": {
+      "thin": "At 16/32px it looked thin. Try the Sharp profile.",
+      "bold": "At 16/32px it looked heavy. Try the Soft profile."
+    },
+    "buttons": {
+      "try_sharp": "Use Sharp profile",
+      "try_soft": "Use Soft profile"
+    }
+  },
+  "hints.post_result": {
+    "not_satisfied": "Not what you expected? Tweak settings and try again.",
+    "open_settings": "Adjust settings",
+    "retry": "Try again"
+  },
+  "tips": {
+    "preset_recommend": {
+      "title": "Recommended: PWA",
+      "desc": "Large image detected. Apply PWA preset (192/512 + manifest)?",
+      "title_win": "Recommended: Windows",
+      "desc_win": "You recently used Windows/Electron. Keep this preset?"
+    }
+  },
+  "tooltips": {
+    "auto_profile": "Automatic tuning for 16–96 px",
+    "crisp_small": "Step-downscaling for 16/32",
+    "outline16": "Outline at 16 px",
+    "small_icon_mode": "Micro-bolding 1px at 16",
+    "windows_canonical": "Generate VS names (Square150x150Logo.png etc.)",
+    "windows_organize": "Subfolders Assets/Taskbar, Assets/Tiles, Assets/StoreLogo"
   }
-} 
+}
