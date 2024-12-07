@@ -1,7 +1,6 @@
+import { createContext, useContext, useEffect, useState } from "react";
 
-import { createContext, useContext, useEffect, useState } from 'react';
-
-type Theme = 'dark' | 'light' | 'system';
+type Theme = "dark" | "light" | "system";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -16,7 +15,7 @@ type ThemeProviderState = {
 };
 
 const initialState: ThemeProviderState = {
-  theme: 'system',
+  theme: "system",
   setTheme: () => null,
   toggleTheme: () => null,
 };
@@ -25,14 +24,14 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
-  storageKey = 'icosmith-ui-theme',
+  defaultTheme = "system",
+  storageKey = "icosmith-ui-theme",
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     const current = localStorage.getItem(storageKey) as Theme | null;
     if (current) return current;
-    const legacy = localStorage.getItem('icoforge-ui-theme') as Theme | null;
+    const legacy = localStorage.getItem("icoforge-ui-theme") as Theme | null;
     if (legacy) {
       localStorage.setItem(storageKey, legacy);
       return legacy;
@@ -43,13 +42,13 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement;
 
-    root.classList.remove('light', 'dark');
+    root.classList.remove("light", "dark");
 
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+    if (theme === "system") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
-        ? 'dark'
-        : 'light';
+        ? "dark"
+        : "light";
 
       root.classList.add(systemTheme);
       return;
@@ -65,7 +64,7 @@ export function ThemeProvider({
       setTheme(theme);
     },
     toggleTheme: () => {
-      const newTheme = theme === 'light' ? 'dark' : 'light';
+      const newTheme = theme === "light" ? "dark" : "light";
       localStorage.setItem(storageKey, newTheme);
       setTheme(newTheme);
     },
@@ -82,7 +81,7 @@ export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
 
   if (context === undefined)
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
 
   return context;
 };
