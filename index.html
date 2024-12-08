@@ -1,35 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     
-    
-    <title>IcoSmith - Conversor de Favicon Online Gratuito | PNG, JPG, SVG para ICO</title>
-    <meta name="description" content="Converta imagens PNG, JPG e SVG para favicon ICO online. Gerador profissional com 6 resoluções, 100% seguro e sem upload. Ideal para desenvolvedores e designers." />
+    <title>IcoSmith – Gerador e Conversor de Favicon | ICO 16–256, PWA e Windows Store</title>
+    <meta name="description" content="Converta PNG/JPG/SVG para .ICO 16–256. Pacote PWA (manifest + apple‑touch‑icon) e assets do Windows Store (targetsize, tiles, StoreLogo). Processamento local e rápido." />
     <meta name="author" content="IcoSmith" />
-    <meta name="keywords" content="convert png to ico, jpg to ico, favicon generator, online ico converter, icon maker, favicon creator" />
+    
 
-    <meta property="og:title" content="IcoSmith - Conversor de Favicon Online Gratuito | PNG, JPG, SVG para ICO" />
-    <meta property="og:description" content="Converta PNG, JPG e SVG para ICO com múltiplas resoluções. 100% local, sem upload." />
+    <meta property="og:title" content="IcoSmith – Gerador e Conversor de Favicon" />
+    <meta property="og:description" content="PNG/JPG/SVG → ICO (16–256), pacote PWA e assets do Windows Store (taskbar/tiles/StoreLogo)." />
     <meta property="og:site_name" content="IcoSmith" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:locale:alternate" content="pt_BR" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:locale:alternate" content="es_ES" />
     <meta property="og:type" content="website" />
     <link rel="canonical" href="https://icosmith.com/" />
 
     <meta property="og:url" content="https://icosmith.com/" />
-    <meta property="og:image" content="/android-chrome-512x512.png" />
+    <meta property="og:image" content="https://icosmith.com/og-icosmith-1200x630.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="IcoSmith - Conversor de Favicon Online" />
-    <meta name="twitter:description" content="Gerador de favicon e conversor ICO gratuito, rápido e seguro." />
-    <meta name="twitter:image" content="/android-chrome-512x512.png" />
+    <meta name="twitter:title" content="IcoSmith – Gerador e Conversor de Favicon" />
+    <meta name="twitter:description" content="PNG/JPG/SVG → ICO (16–256), pacote PWA e assets do Windows Store." />
+    <meta name="twitter:image" content="https://icosmith.com/og-icosmith-1200x630.png" />
     <link rel="alternate" hreflang="pt-BR" href="https://icosmith.com/?lang=pt" />
     <link rel="alternate" hreflang="en" href="https://icosmith.com/?lang=en" />
     <link rel="alternate" hreflang="es" href="https://icosmith.com/?lang=es" />
+    <link rel="alternate" hreflang="x-default" href="https://icosmith.com/" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "IcoSmith",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web",
+        "url": "https://icosmith.com/",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "O que são ícones targetsize no Windows?",
+            "acceptedAnswer": {"@type": "Answer", "text": "São variantes derivadas do 44×44 usadas pela taskbar/Start: 16, 20, 24, 30, 32, 40, 48 (e mais). O Windows escolhe automaticamente a melhor."}
+          },
+          {
+            "@type": "Question",
+            "name": "Qual a diferença entre plated, unplated e lightunplated?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Plated pode receber tint da cor de destaque. Unplated mantém as cores originais. Lightunplated é a variante clara para fundos escuros."}
+          },
+          {
+            "@type": "Question",
+            "name": "Vocês exportam nomes canônicos do Visual Studio?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Sim: Square44x44Logo.png, Square150x150Logo.png, Wide310x150Logo.png, Square310x310Logo.png e StoreLogo.png, além do ZIP organizado."}
+          }
+        ]
+      }
+    </script>
 
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="alternate icon" href="/favicon.svg" type="image/svg+xml" />
@@ -37,6 +73,26 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0f172a" />
     <meta name="theme-color" content="#0A0F1E" />
+    
+    <!-- Cloudflare Web Analytics (configure token no painel) -->
+    <meta name="cf-beacon-token" content="36d5709ccd694c6a991ff5edddac022f" />
+    <script>
+      (function(){
+        try {
+          var host = location.hostname;
+          if (host === 'localhost' || host === '127.0.0.1' || host === '::1') return;
+          var meta = document.querySelector('meta[name="cf-beacon-token"]');
+          var token = meta && meta.getAttribute('content');
+          if (token && token.trim()) {
+            var s = document.createElement('script');
+            s.defer = true;
+            s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+            s.setAttribute('data-cf-beacon', JSON.stringify({ token: token, spa: true }));
+            document.head.appendChild(s);
+          }
+        } catch (_) {}
+      })();
+    </script>
     
 
   </head>
