@@ -1,9 +1,5 @@
-/* Variable fonts (primary) */
-@import "@fontsource-variable/manrope/index.css";
-@import "@fontsource-variable/space-grotesk/index.css";
-/* Keep Inter as fallback for older browsers */
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/600.css";
+/* Inter variable (latin-only) as primary font */
+@import "./fonts/inter-latin.css";
 
 @tailwind base;
 @tailwind components;
@@ -12,6 +8,12 @@
 /* Utilities */
 .pixelated {
   image-rendering: pixelated;
+}
+
+.image-render-pixelated {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
 
 @layer base {
@@ -38,7 +40,7 @@
     --input: 220 13% 18%;
     --ring: 25 95% 53%;
     --radius: 0.75rem;
-    
+
     /* Extended palette */
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
@@ -73,7 +75,7 @@
     --border: 220 13% 22%;
     --input: 220 13% 18%;
     --ring: 25 95% 53%;
-    
+
     /* Extended palette for dark mode */
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
@@ -96,14 +98,26 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
     font-variation-settings: "wght" 450;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: "Space Grotesk Variable", "Space Grotesk", system-ui, sans-serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Inter", system-ui, sans-serif;
     @apply font-semibold tracking-tight;
-    font-variation-settings: "wght" 600;
+  }
+  /* Stabilize hero heading metrics across zoom/DPI */
+  .hero-title {
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    font-variation-settings: "wght" 700;
   }
 }
 
@@ -111,56 +125,86 @@
   .glass {
     @apply bg-white/5 backdrop-blur-xl border border-white/10;
   }
-  
+
   .glass-dark {
     @apply bg-black/20 backdrop-blur-xl border border-orange-500/10;
   }
 
   .bg-checkerboard {
-    background-image: 
-      linear-gradient(45deg, hsl(var(--border)) 25%, transparent 25%), 
-      linear-gradient(-45deg, hsl(var(--border)) 25%, transparent 25%), 
-      linear-gradient(45deg, transparent 75%, hsl(var(--border)) 75%), 
+    background-image:
+      linear-gradient(45deg, hsl(var(--border)) 25%, transparent 25%),
+      linear-gradient(-45deg, hsl(var(--border)) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, hsl(var(--border)) 75%),
       linear-gradient(-45deg, transparent 75%, hsl(var(--border)) 75%);
     background-size: 16px 16px;
-    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    background-position:
+      0 0,
+      0 8px,
+      8px -8px,
+      -8px 0px;
   }
 
   .dark .bg-checkerboard {
-    background-image: 
-      linear-gradient(45deg, rgba(255, 107, 0, 0.08) 25%, transparent 25%), 
-      linear-gradient(-45deg, rgba(255, 107, 0, 0.08) 25%, transparent 25%), 
-      linear-gradient(45deg, transparent 75%, rgba(255, 107, 0, 0.08) 75%), 
+    background-image:
+      linear-gradient(45deg, rgba(255, 107, 0, 0.08) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(255, 107, 0, 0.08) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(255, 107, 0, 0.08) 75%),
       linear-gradient(-45deg, transparent 75%, rgba(255, 107, 0, 0.08) 75%);
     background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    background-position:
+      0 0,
+      0 10px,
+      10px -10px,
+      -10px 0px;
   }
 
   .feature-pill {
     @apply flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-xs md:text-sm text-foreground/90 transition-all duration-200 font-medium;
   }
-  
+
   .feature-pill:hover {
     @apply border-primary/35 bg-primary/15 text-foreground shadow;
   }
 
   /* Gradient utilities */
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gradient-start)) 0%,
+      hsl(var(--gradient-end)) 100%
+    );
   }
-  
+
   .gradient-primary-subtle {
-    background: linear-gradient(135deg, hsl(var(--gradient-start) / 0.1) 0%, hsl(var(--gradient-end) / 0.1) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gradient-start) / 0.1) 0%,
+      hsl(var(--gradient-end) / 0.1) 100%
+    );
   }
 
   /* Status color utilities */
-  .text-success { color: hsl(var(--success)); }
-  .text-warning { color: hsl(var(--warning)); }
-  .text-info { color: hsl(var(--info)); }
-  .bg-success { background-color: hsl(var(--success)); }
-  .bg-warning { background-color: hsl(var(--warning)); }
-  .bg-info { background-color: hsl(var(--info)); }
-  .bg-surface-elevated { background-color: hsl(var(--surface-elevated)); }
+  .text-success {
+    color: hsl(var(--success));
+  }
+  .text-warning {
+    color: hsl(var(--warning));
+  }
+  .text-info {
+    color: hsl(var(--info));
+  }
+  .bg-success {
+    background-color: hsl(var(--success));
+  }
+  .bg-warning {
+    background-color: hsl(var(--warning));
+  }
+  .bg-info {
+    background-color: hsl(var(--info));
+  }
+  .bg-surface-elevated {
+    background-color: hsl(var(--surface-elevated));
+  }
 }
 
 @layer utilities {
@@ -192,11 +236,15 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
+  background: linear-gradient(
+    180deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary)) 100%
+  );
   border-radius: 4px;
   opacity: 0.7;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   opacity: 1;
-} 
+}
