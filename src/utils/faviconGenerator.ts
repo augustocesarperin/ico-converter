@@ -4,45 +4,80 @@ export interface FaviconPackage {
   files: { name: string; blob: Blob; type: string }[];
   htmlCode: string;
   zipBlob?: Blob;
+  windowsZipBlob?: Blob;
   filename: string;
 }
 
-// Ensure we always export images in the exact requested size
-const renderToSizedBlob = (sourceCanvas: HTMLCanvasElement, size: number, type: 'image/png' | 'image/webp', quality?: number): Promise<Blob> => {
+// Renders a new blob resizing the provided canvas to the target square size
+// Keeps high-quality resampling and supports PNG/WebP outputs
+async function renderToSizedBlob(
+  sourceCanvas: HTMLCanvasElement,
+  size: number,
+  mimeType: 'image/png' | 'image/webp',
+  quality?: number,
+): Promise<Blob> {
   const target = document.createElement('canvas');
   target.width = size;
   target.height = size;
   const ctx = target.getContext('2d');
-  return new Promise((resolve, reject) => {
-    try {
-      if (!ctx) {
-        reject(new Error('Failed to get 2D context'));
-        return;
-      }
-      ctx.imageSmoothingEnabled = true;
-      // @ts-ignore – not in lib.dom types across all TS versions
-      ctx.imageSmoothingQuality = 'high';
-      ctx.clearRect(0, 0, size, size);
-      ctx.drawImage(
-        sourceCanvas,
-        0,
-        0,
-        sourceCanvas.width,
-        sourceCanvas.height,
-        0,
-        0,
-        size,
-        size
-      );
-      target.toBlob((blob) => {
-        if (blob) resolve(blob);
-        else reject(new Error('Failed to create blob'));
-      }, type, quality);
-    } catch (e) {
-      reject(e);
-    }
+  if (!ctx) throw new Error('2D context not available');
+  ctx.imageSmoothingEnabled = true;
+  (ctx as unknown as CanvasRenderingContext2D & { imageSmoothingQuality?: ImageSmoothingQuality }).imageSmoothingQuality = 'high';
+  ctx.clearRect(0, 0, size, size);
+  ctx.drawImage(
+    sourceCanvas,
+    0,
+    0,
+    sourceCanvas.width,
+    sourceCanvas.height,
+    0,
+    0,
+    size,
+    size,
+  );
+
+  // Prefer toBlob; fallback to dataURL if needed
+  const blob = await new Promise<Blob>((resolve) => {
+    target.toBlob((b) => {
+      if (b) return resolve(b);
+      // Fallback: dataURL -> Blob
+      const dataUrl = target.toDataURL(mimeType, quality);
+      fetch(dataUrl)
+        .then((r) => r.blob())
+        .then((bb) => resolve(bb));
+    }, mimeType, quality);
   });
-};
+  return blob;
+}
+
+// Render keeping aspect ratio inside WxH (letterbox) with transparency
+async function renderToBoxBlob(
+  sourceCanvas: HTMLCanvasElement,
+  width: number,
+  height: number,
+  mimeType: 'image/png',
+): Promise<Blob> {
+  const target = document.createElement('canvas');
+  target.width = width;
+  target.height = height;
+  const ctx = target.getContext('2d');
+  if (!ctx) throw new Error('2D context not available');
+  ctx.clearRect(0, 0, width, height);
+  const iw = sourceCanvas.width;
+  const ih = sourceCanvas.height;
+  const scale = Math.min(width / iw, height / ih);
+  const w = Math.max(1, Math.round(iw * scale));
+  const h = Math.max(1, Math.round(ih * scale));
+  const dx = Math.floor((width - w) / 2);
+  const dy = Math.floor((height - h) / 2);
+  ctx.imageSmoothingEnabled = true;
+  (ctx as unknown as CanvasRenderingContext2D & { imageSmoothingQuality?: ImageSmoothingQuality }).imageSmoothingQuality = 'high';
+  ctx.drawImage(sourceCanvas, 0, 0, iw, ih, dx, dy, w, h);
+  const blob = await new Promise<Blob>((resolve) => {
+    target.toBlob((b) => resolve(b!), mimeType);
+  });
+  return blob;
+}
 
 export const generateFaviconPackage = async (
   imageFile: File,
@@ -58,15 +93,12 @@ export const generateFaviconPackage = async (
 
   // Generate and add PNG files
   if (config.includePNG || config.generateFaviconPackage) {
-    // Quando pacote completo está ativo, sempre incluir (16,32,180,192,512)
-    // e também honrar os tamanhos selecionados pelo usuário (evitar duplicatas)
     const base = config.generateFaviconPackage ? [16, 32, 180, 192, 512] : [];
     const pngSizes = Array.from(new Set([...base, ...config.selectedSizes])).sort((a, b) => a - b);
 
     for (const size of pngSizes) {
       const resolution = resolutions.find(r => r.size === size);
-      const sourceCanvas = resolution ? resolution.canvas : resolutions[resolutions.length - 1].canvas; // Fallback to largest
-      // Always render to exact requested size to avoid mislabeled dimensions and tiny outputs
+      const sourceCanvas = resolution ? resolution.canvas : resolutions[resolutions.length - 1].canvas;
       const pngBlob = await renderToSizedBlob(sourceCanvas, size, 'image/png');
       
       let pngFilename = `${filename}-${size}x${size}.png`;
@@ -75,16 +107,17 @@ export const generateFaviconPackage = async (
       if (size === 512) pngFilename = `android-chrome-512x512.png`;
 
       files.push({ name: pngFilename, blob: pngBlob, type: 'image/png' });
-      if ((import.meta as any).env?.DEV) {
+      if ((import.meta as unknown as { env?: Record<string, unknown> }).env?.DEV) {
         try {
-          // Log per-file for quick manual verification
           console.log(`[FaviconPackage] PNG ${pngFilename}: ${pngBlob.size} bytes`);
-        } catch {}
+        } catch {
+          /* noop */
+        }
       }
     }
   }
 
-  // Generate and add WebP files
+
   if (config.includeWebP) {
     for (const { size, canvas } of resolutions) {
       if (config.selectedSizes.includes(size)) {
@@ -94,17 +127,16 @@ export const generateFaviconPackage = async (
     }
   }
 
-  // Generate HTML code
   const htmlCode = generateHTMLCode(filename);
 
-  // Create ZIP file
+
   const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
   files.forEach(file => {
     zip.file(file.name, file.blob);
   });
 
-  // Add default site.webmanifest and safari-pinned-tab.svg
+
   const manifestJson = {
     id: '/',
     name: 'IcoSmith',
@@ -124,15 +156,128 @@ export const generateFaviconPackage = async (
   zip.file('safari-pinned-tab.svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><path fill="#000" d="M20 4h24a16 16 0 0 1 16 16v24a16 16 0 0 1-16 16H20A16 16 0 0 1 4 44V20A16 16 0 0 1 20 4Z"/></svg>');
   const zipBlob = await zip.generateAsync({ type: 'blob' });
 
-  if ((import.meta as any).env?.DEV) {
-    try {
-      console.log('[FaviconPackage] Files included:');
-      for (const f of files) console.log(` - ${f.name}: ${f.blob.size} bytes`);
-      console.log(`[FaviconPackage] ZIP size: ${zipBlob.size} bytes`);
-    } catch {}
+  // Windows assets package (optional)
+  let windowsZipBlob: Blob | undefined;
+  if (config.windowsAssets) {
+    const wzip = new JSZip();
+    const prefixTaskbar = config.windowsOrganizeZip ? 'Assets/Taskbar/' : '';
+    const prefixTiles = config.windowsOrganizeZip ? 'Assets/Tiles/' : '';
+    const prefixStore = config.windowsOrganizeZip ? 'Assets/StoreLogo/' : '';
+    const prefixRoot = config.windowsOrganizeZip ? 'Assets/' : '';
+
+    const getCanvas = (size: number) => {
+      return (
+        resolutions.find(r => r.size === size)?.canvas ||
+        resolutions[resolutions.length - 1].canvas
+      );
+    };
+
+    // 44x44 base
+    const base44 = getCanvas(44);
+    const targetSizes = [16,20,24,30,32,40,48];
+    for (const s of targetSizes) {
+      const blob = await renderToSizedBlob(base44, s, 'image/png');
+      wzip.file(`${prefixTaskbar}${filename}-44x44.targetsize-${s}.png`, blob);
+    }
+    // Optional 256 fallback derived from 44 base
+    const blobTs256 = await renderToSizedBlob(base44, 256, 'image/png');
+    wzip.file(`${prefixTaskbar}${filename}-44x44.targetsize-256.png`, blobTs256);
+
+    // Unplated / lightunplated variants: 20/24/32
+    for (const s of [20,24,32]) {
+      const b = await renderToSizedBlob(base44, s, 'image/png');
+      wzip.file(`${prefixTaskbar}${filename}-44x44.targetsize-${s}_altform-unplated.png`, b);
+      wzip.file(`${prefixTaskbar}${filename}-44x44.targetsize-${s}_altform-lightunplated.png`, b);
+    }
+
+    // Square256 (plated/unplated)
+    const base256 = getCanvas(256);
+    const sq256 = await renderToSizedBlob(base256, 256, 'image/png');
+    const sq256u = await renderToSizedBlob(base256, 256, 'image/png');
+    wzip.file(`${prefixTiles}${filename}-Square256x256.png`, sq256);
+    wzip.file(`${prefixTiles}${filename}-Square256x256_unplated.png`, sq256u);
+
+    // Tiles for Store (profiles)
+    const profile = config.windowsProfile || 'recommended';
+    const addSquare150 = async () => {
+      for (const scale of [100,125,150,200,400] as const) {
+        const size = Math.round(150 * (scale / 100));
+        const b = await renderToSizedBlob(getCanvas(150), size, 'image/png');
+        wzip.file(`${prefixTiles}Square150x150Logo.scale-${scale}.png`, b);
+      }
+      if (config.windowsCanonicalNames) {
+        const b = await renderToSizedBlob(getCanvas(150), 150, 'image/png');
+        wzip.file(`${prefixRoot}Square150x150Logo.png`, b);
+      }
+    };
+    const addSquare310 = async () => {
+      for (const scale of [100,125,150,200,400] as const) {
+        const size = Math.round(310 * (scale / 100));
+        const b = await renderToSizedBlob(getCanvas(256), size, 'image/png');
+        wzip.file(`${prefixTiles}Square310x310Logo.scale-${scale}.png`, b);
+      }
+      if (config.windowsCanonicalNames) {
+        const b = await renderToSizedBlob(getCanvas(256), 310, 'image/png');
+        wzip.file(`${prefixRoot}Square310x310Logo.png`, b);
+      }
+    };
+    const addWide310x150 = async () => {
+      for (const scale of [100,125,150,200,400] as const) {
+        const w = Math.round(310 * (scale / 100));
+        const h = Math.round(150 * (scale / 100));
+        const b = await renderToBoxBlob(getCanvas(256), w, h, 'image/png');
+        wzip.file(`${prefixTiles}Wide310x150Logo.scale-${scale}.png`, b);
+      }
+      if (config.windowsCanonicalNames) {
+        const b = await renderToBoxBlob(getCanvas(256), 310, 150, 'image/png');
+        wzip.file(`${prefixRoot}Wide310x150Logo.png`, b);
+      }
+    };
+
+    if (profile === 'minimal') {
+      await addSquare150();
+    } else if (profile === 'recommended') {
+      await addSquare150();
+      // StoreLogo set
+      const storeScales = [100,125,150,200,400] as const;
+      const storeBase = getCanvas(64);
+      for (const scale of storeScales) {
+        const size = Math.round(50 * (scale / 100));
+        const b = await renderToSizedBlob(storeBase, size, 'image/png');
+        wzip.file(`${prefixStore}StoreLogo.scale-${scale}.png`, b);
+      }
+      if (config.windowsCanonicalNames) {
+        const b = await renderToSizedBlob(storeBase, 50, 'image/png');
+        wzip.file(`${prefixRoot}StoreLogo.png`, b);
+      }
+    } else {
+      // complete
+      await addSquare150();
+      await addWide310x150();
+      await addSquare310();
+      const storeScales = [100,125,150,200,400] as const;
+      const storeBase = getCanvas(64);
+      for (const scale of storeScales) {
+        const size = Math.round(50 * (scale / 100));
+        const b = await renderToSizedBlob(storeBase, size, 'image/png');
+        wzip.file(`${prefixStore}StoreLogo.scale-${scale}.png`, b);
+      }
+      if (config.windowsCanonicalNames) {
+        const b = await renderToSizedBlob(storeBase, 50, 'image/png');
+        wzip.file(`${prefixRoot}StoreLogo.png`, b);
+      }
+    }
+
+    // base 44 as canonical if requested
+    if (config.windowsCanonicalNames) {
+      const b44 = await renderToSizedBlob(base44, 44, 'image/png');
+      wzip.file(`${prefixRoot}Square44x44Logo.png`, b44);
+    }
+
+    windowsZipBlob = await wzip.generateAsync({ type: 'blob' });
   }
 
-  return { files, htmlCode, zipBlob, filename };
+  return { files, htmlCode, zipBlob, windowsZipBlob, filename };
 };
 
 const generateHTMLCode = (filename: string): string => {
