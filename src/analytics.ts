@@ -2,23 +2,19 @@
 
 export function initAnalytics(): void {
   try {
-    const cfToken = (import.meta as any).env?.VITE_CF_BEACON_TOKEN as string | undefined;
-    if (cfToken) {
-      const s = document.createElement('script');
-      s.defer = true;
-      s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-      s.setAttribute('data-cf-beacon', JSON.stringify({ token: cfToken }));
-      document.head.appendChild(s);
-    }
+    const env =
+      (import.meta as unknown as { env?: Record<string, string | undefined> })
+        .env || {};
+    // Cloudflare beacon já é injetado via meta + loader em index.html
 
-    const gaId = (import.meta as any).env?.VITE_GA_MEASUREMENT_ID as string | undefined;
-    if (gaId) {
-      const gtag = document.createElement('script');
+    const gaId = env.VITE_GA_MEASUREMENT_ID;
+    if (typeof gaId === "string" && gaId.length > 0) {
+      const gtag = document.createElement("script");
       gtag.async = true;
       gtag.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
       document.head.appendChild(gtag);
 
-      const inline = document.createElement('script');
+      const inline = document.createElement("script");
       inline.innerHTML = `
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);} 
@@ -31,8 +27,3 @@ export function initAnalytics(): void {
     // silently ignore
   }
 }
-
-
-
-
-
