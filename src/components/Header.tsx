@@ -95,7 +95,7 @@ const Header = () => {
                 variant="ghost"
                 onClick={() => scrollToSection(link.href)}
                 className={cn(
-                  'font-medium text-sm hover:text-foreground focus-visible-ring',
+                  'font-medium text-sm hover:text-foreground focus-visible-ring hover-focus-unified',
                   activeSection === link.href ? 'text-foreground' : 'text-muted-foreground'
                 )}
                 aria-label={t('nav.aria_label', { name: link.name })}
