@@ -1,0 +1,12 @@
+# Binaries (hide diffs)
+*.png -diff
+*.ico -diff
+*.zip -diff
+
+# Generated text (collapsed on GitHub, but diff still expandable)
+public/sitemap.xml linguist-generated=true
+**/__snapshots__/** linguist-generated=true
+*.snap linguist-generated=true
+package-lock.json linguist-generated=true
+package-lock.json -diff
+
