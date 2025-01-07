@@ -147,7 +147,7 @@ const Index = () => {
       /* noop */
     }
     setIsProcessing(true);
-    trackEvent("start_conversion", { filename: file.name });
+    trackEvent("start_conversion", { mime: file.type, sizeKB: Math.round(file.size / 1024) });
     setProgress(0);
     setCurrentStep(t("processing.starting"));
     setProcessingError("");
@@ -312,7 +312,8 @@ const Index = () => {
       const errorMessage =
         error instanceof Error ? error.message : t("processing.unknown_error");
       setProcessingError(errorMessage);
-      trackEvent("error_conversion", { message: errorMessage });
+      const kind = /timeout/i.test(String(errorMessage)) ? "timeout" : "error";
+      trackEvent("error_conversion", { kind });
 
       toast({
         title: t("processing.error_toast_title"),

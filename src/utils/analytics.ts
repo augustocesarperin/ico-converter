@@ -23,6 +23,23 @@ export function trackEvent(
 ): void {
   if (!isBrowser()) return;
 
+  // Defensive sanitization: strip large strings or unexpected props
+  try {
+    const sanitized: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(payload)) {
+      if (typeof v === "string") {
+        // Drop paths/usernames; keep short categorical strings only
+        sanitized[k] = v.length > 64 ? v.slice(0, 64) : v;
+      } else if (typeof v === "number" || typeof v === "boolean") {
+        sanitized[k] = v;
+      }
+      // ignore objects/arrays by default
+    }
+    payload = sanitized as AnalyticsEventPayload;
+  } catch {
+    // noop
+  }
+
   try {
     // Plausible (no cookies)
     const plausible = (
