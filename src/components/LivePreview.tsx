@@ -212,7 +212,7 @@ const LivePreview = ({ file, config, onPreviewReady }: LivePreviewProps) => {
                     <div className="flex h-full items-center justify-center p-2">
                       <img
                         src={previewsBySize[size]}
-                        alt={`${size}x${size} preview`}
+                        alt={t("preview.details.size", { defaultValue: "Size" }) + ` ${size}x${size}`}
                         className={`max-h-full max-w-full transition-transform duration-300 group-hover:scale-110 ${
                           size <= 32 ? "image-render-pixelated" : ""
                         }`}
