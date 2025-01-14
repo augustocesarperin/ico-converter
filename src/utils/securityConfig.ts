@@ -51,11 +51,11 @@ export const SECURITY_CONFIG = {
   // CSP Configuration
   CSP_CONFIG: {
     defaultSrc: "'self'",
-    scriptSrc: "'self' 'unsafe-inline' 'unsafe-eval'",
+    scriptSrc: "'self' 'unsafe-inline' https://static.cloudflareinsights.com",
     styleSrc: "'self' 'unsafe-inline' https://fonts.googleapis.com",
     fontSrc: "'self' https://fonts.gstatic.com",
     imgSrc: "'self' data: blob:",
-    connectSrc: "'self'",
+    connectSrc: "'self' https://cloudflareinsights.com https://static.cloudflareinsights.com",
     frameAncestors: "'none'",
     baseUri: "'self'",
     formAction: "'self'",
