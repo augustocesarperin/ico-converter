@@ -40,6 +40,12 @@ export interface ConversionConfig {
   autoProfile?: boolean;
   windowsCanonicalNames?: boolean;
   windowsOrganizeZip?: boolean;
+  windowsHighFidelity?: boolean;
+  // PWA/manifest customization
+  pwaName?: string;
+  pwaThemeColor?: string;
+  pwaBackgroundColor?: string;
+  pwaMaskIconColor?: string;
 }
 
 const AVAILABLE_SIZES = [
@@ -83,6 +89,11 @@ const ConversionSettings = ({
     autoProfile: true,
     windowsCanonicalNames: false,
     windowsOrganizeZip: true,
+    windowsHighFidelity: true,
+    pwaName: "IcoSmith App",
+    pwaThemeColor: "#0A0F1E",
+    pwaBackgroundColor: "#0A0F1E",
+    pwaMaskIconColor: "#0f172a",
   };
 
   const updateSettings = (
@@ -245,6 +256,7 @@ const ConversionSettings = ({
                         windowsProfile: "recommended",
                         windowsOrganizeZip: true,
                         windowsCanonicalNames: false,
+                        windowsHighFidelity: true,
                         autoProfile: false,
                       });
                       setActivePreset("windows");
@@ -267,6 +279,7 @@ const ConversionSettings = ({
                         includeWebP: false,
                         preserveAspectRatio: true,
                         windowsAssets: true,
+                        windowsHighFidelity: true,
                       });
                       setActivePreset("windowsStore");
                     }}
@@ -647,6 +660,21 @@ const ConversionSettings = ({
                                     })}
                                   </Label>
                                 </div>
+                                <div className="flex items-start space-x-3">
+                                  <Checkbox
+                                    id="windows-highfidelity"
+                                    checked={currentSettings.windowsHighFidelity ?? true}
+                                    onCheckedChange={(checked) =>
+                                      updateSettings("windowsHighFidelity", !!checked)
+                                    }
+                                  />
+                                  <Label
+                                    htmlFor="windows-highfidelity"
+                                    className="cursor-pointer text-sm font-normal"
+                                  >
+                                    {t("settings.windows_highfidelity", { defaultValue: "Alta fidelidade (usar melhor fonte para cada tamanho)" })}
+                                  </Label>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -717,6 +745,54 @@ const ConversionSettings = ({
                       >
                         {t("settings.small_icon_profile.soft", { defaultValue: "Suave" })}
                       </Button>
+                    </div>
+                  </div>
+                )}
+
+                {currentSettings.generateFaviconPackage && (
+                  <div className="space-y-4">
+                    <Label>{t("settings.pwa_section_label", { defaultValue: "PWA/Manifest" })}</Label>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="pwa-name">{t("settings.pwa_name", { defaultValue: "Nome do app" })}</Label>
+                        <Input
+                          id="pwa-name"
+                          value={currentSettings.pwaName ?? ""}
+                          onChange={(e) => updateSettings("pwaName", e.target.value)}
+                          placeholder="Seu App"
+                          className="border-white/20 bg-black/40"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="pwa-theme">theme_color</Label>
+                        <Input
+                          id="pwa-theme"
+                          type="color"
+                          value={currentSettings.pwaThemeColor ?? "#0A0F1E"}
+                          onChange={(e) => updateSettings("pwaThemeColor", e.target.value)}
+                          className="h-10 w-12 border-white/20 bg-black/40"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="pwa-bg">background_color</Label>
+                        <Input
+                          id="pwa-bg"
+                          type="color"
+                          value={currentSettings.pwaBackgroundColor ?? "#0A0F1E"}
+                          onChange={(e) => updateSettings("pwaBackgroundColor", e.target.value)}
+                          className="h-10 w-12 border-white/20 bg-black/40"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="pwa-mask">mask-icon color</Label>
+                        <Input
+                          id="pwa-mask"
+                          type="color"
+                          value={currentSettings.pwaMaskIconColor ?? "#0f172a"}
+                          onChange={(e) => updateSettings("pwaMaskIconColor", e.target.value)}
+                          className="h-10 w-12 border-white/20 bg-black/40"
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
