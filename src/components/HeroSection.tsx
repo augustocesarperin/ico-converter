@@ -59,6 +59,30 @@ const HeroSection = ({
     })();
   }, []);
 
+  // Paste from clipboard (Ctrl/Cmd+V)
+  useEffect(() => {
+    const onPaste = async (e: ClipboardEvent) => {
+      try {
+        const items = e.clipboardData?.items || [];
+        for (let i = 0; i < items.length; i++) {
+          const it = items[i];
+          if (it.kind === "file") {
+            const file = it.getAsFile();
+            if (file && acceptString.split(",").includes(file.type)) {
+              await validateAndUpload(file);
+              e.preventDefault();
+              return;
+            }
+          }
+        }
+      } catch {
+        /* noop */
+      }
+    };
+    window.addEventListener("paste", onPaste);
+    return () => window.removeEventListener("paste", onPaste);
+  }, [acceptString]);
+
   const validateAndUpload = async (file: File, isRetry = false) => {
     if (!isRetry) {
       setValidationError("");
@@ -283,6 +307,7 @@ const HeroSection = ({
                 className="hidden"
                 disabled={isProcessing || hasProcessedImage || isRetrying}
                 aria-label={t("hero.upload.aria_label")}
+                aria-describedby="hero-upload-title hero-upload-sub"
               />
               <AnimatePresence mode="wait">
                 {!hasProcessedImage && !isProcessing && (
@@ -306,10 +331,10 @@ const HeroSection = ({
                       <Upload className="h-8 w-8 text-orange-500 sm:h-10 sm:w-10" />
                     </motion.div>
                     <div className="space-y-2">
-                      <h3 className="text-lg font-semibold text-foreground sm:text-xl">
+                      <h3 id="hero-upload-title" className="text-lg font-semibold text-foreground sm:text-xl">
                         {t("hero.upload.title")}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p id="hero-upload-sub" className="text-sm text-muted-foreground">
                         {t("hero.upload.subtitle")}
                       </p>
                     </div>
@@ -352,7 +377,7 @@ const HeroSection = ({
                     currentStep={
                       isRetrying
                         ? t("hero.processing.retrying_step")
-                        : currentStep
+                        : currentStep || ""
                     }
                     error={processingError}
                   />
@@ -445,3 +470,7 @@ const HeroSection = ({
 };
 
 export default HeroSection;
+
+
+
+

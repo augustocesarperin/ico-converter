@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import LivePreview from "@/components/LivePreview";
+import GlobalEffectsDefs from "@/components/GlobalEffectsDefs";
 const PreviewSection = lazy(() => import("@/components/PreviewSection"));
 const CodeGenerator = lazy(() => import("@/components/CodeGenerator"));
 import { useToast } from "@/hooks/use-toast";
@@ -23,6 +24,7 @@ import {
 import { getImageDimensions, getSvgDimensions } from "@/utils/fileUtils";
 import { generateIcoFromImage, GeneratedIco } from "@/utils/icoGenerator";
 import { processWithWorker } from "@/utils/icoWorkerClient";
+import { computeSmallIconHint as computeSmallIconHintUtil } from "@/utils/smallIconHint";
 import { sanitizeSvgFile } from "@/utils/svgSanitize";
 
 export interface FaviconPackage extends FaviconPackageType {
@@ -78,6 +80,7 @@ const Index = () => {
   });
   const { toast } = useToast();
   const resultsRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLButtonElement>(null);
   const [smallIconHint, setSmallIconHint] = useState<"thin" | "bold" | null>(null);
   const [autoSoftApplied, setAutoSoftApplied] = useState(false);
   // Persist settings
@@ -89,25 +92,8 @@ const Index = () => {
     }
   }, [conversionConfig]);
 
-  const computeSmallIconHint = (resolutions: { size: number; canvas: HTMLCanvasElement }[]) => {
-    const candidate = resolutions.find((r) => r.size === 16) || resolutions.find((r) => r.size === 32);
-    if (!candidate) return null;
-    try {
-      const ctx = candidate.canvas.getContext("2d");
-      if (!ctx) return null;
-      const data = ctx.getImageData(0, 0, candidate.size, candidate.size).data;
-      let solid = 0;
-      for (let i = 0; i < data.length; i += 4) {
-        if (data[i + 3] > 190) solid++;
-      }
-      const coverage = solid / (candidate.size * candidate.size);
-      if (coverage < 0.28) return "thin";
-      if (coverage > 0.70) return "bold";
-      return null;
-    } catch {
-      return null;
-    }
-  };
+  const computeSmallIconHint = (resolutions: { size: number; canvas: HTMLCanvasElement }[]) =>
+    computeSmallIconHintUtil(resolutions);
 
   useEffect(() => {
     if (processedImage && resultsRef.current) {
@@ -117,6 +103,10 @@ const Index = () => {
         const y =
           el.getBoundingClientRect().top + window.scrollY - headerOffset;
         window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+        // Move focus para CTA primário após scroll
+        setTimeout(() => {
+          ctaRef.current?.focus({ preventScroll: true });
+        }, 200);
       }, 200);
     }
   }, [processedImage]);
@@ -353,10 +343,11 @@ const Index = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <AnimatedBackground />
+      <GlobalEffectsDefs />
       <div className="relative z-10 flex min-h-screen flex-col">
         <Header />
 
-        <main className="flex-grow pt-20">
+        <main id="main" className="flex-grow pt-20">
           <HeroSection
             onImageUpload={handleImageUpload}
             onFileSelect={setSelectedFile}
@@ -377,7 +368,7 @@ const Index = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -50 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="container mx-auto px-4 pb-16 md:pb-24"
+                  className="container mx-auto px-4 pb-12 md:pb-16"
                 >
                   <div className="mx-auto max-w-2xl">
                     
@@ -413,6 +404,9 @@ const Index = () => {
                   className="container mx-auto space-y-8 px-4 py-8"
                   ref={resultsRef}
                   style={{ contentVisibility: 'auto' }}
+                  role="region"
+                  aria-label={t('preview.title')}
+                  tabIndex={-1}
                 >
                   {smallIconHint && (
                     <div className="rounded-lg border border-yellow-500/30 bg-yellow-900/20 p-4 text-yellow-200">
@@ -481,6 +475,7 @@ const Index = () => {
                             handleReset();
                             trackEvent("open_settings_after_result");
                           }}
+                          aria-label={t("hints.post_result.open_settings", { defaultValue: "Ajustar configurações" })}
                         >
                           {t("hints.post_result.open_settings", { defaultValue: "Ajustar configurações" })}
                         </button>
@@ -491,6 +486,8 @@ const Index = () => {
                             trackEvent("retry_conversion");
                             void handleImageUpload(processedImage.originalFile);
                           }}
+                          ref={ctaRef}
+                          aria-label={t("hints.post_result.retry", { defaultValue: "Tentar novamente" })}
                         >
                           {t("hints.post_result.retry", { defaultValue: "Tentar novamente" })}
                         </button>
@@ -523,7 +520,7 @@ const Index = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="container mx-auto space-y-16 px-4 py-16" style={{ contentVisibility: 'auto' }}>
+                <div className="container mx-auto space-y-16 px-4 pt-12 pb-16" style={{ contentVisibility: 'auto' }}>
                   <FeaturesSection />
                   <AboutSection />
                 </div>
