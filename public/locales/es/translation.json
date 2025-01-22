@@ -219,8 +219,22 @@
       "include_png": "Incluir archivos PNG individuales en el .zip",
       "include_webp": "Incluir formato WebP (experimental)",
       "windows_assets": "Windows (assets)"
-    }
+    },
+    "pwa_section_label": "PWA/Manifest",
+    "pwa_name": "Nombre de la app",
+    "windows_highfidelity": "Alta fidelidad (usar mejor fuente para cada tamaño)",
+    "small_icon_profile_label": "Calidad de iconos pequeños (16/32)",
+    "small_icon_profile": {
+      "neutral": "Neutro",
+      "sharp": "Nítido",
+      "soft": "Suave",
+      "neutral_hint": "Predeterminado. Balanceado, sin realce extra.",
+      "sharp_hint": "Realza bordes/contraste. Para logos gruesos.",
+      "soft_hint": "Atenúa y preserva trazos finos. Para logos delicados."
+    },
+    "reset_defaults": "Restablecer predeterminado"
   },
+  "hero.advanced": "Opciones Avanzadas",
   "processing": {
     "starting": "Iniciando...",
     "processing_worker": "Procesando en worker...",
@@ -235,9 +249,12 @@
   "tabs": { "windows": "Windows" },
   "windows": {
     "info": "Los assets de taskbar y Store de Windows se incluyen cuando están activados en opciones.",
-    "download_assets_only": "Descargar solo assets de Windows"
-  }
-  ,
+    "download_assets_only": "Descargar solo assets de Windows",
+    "advanced": "Avanzado (Windows)",
+    "profile_min": "Minimal",
+    "profile_rec": "Recomendado",
+    "profile_full": "Completo"
+  },
   "hints": {
     "small_icons": {
       "thin": "En 16/32px se ve delgado. Prueba el perfil Nítido.",
@@ -271,24 +288,11 @@
     "small_icon_mode": "Engrosar 1px en 16",
     "windows_canonical": "Generar nombres de VS (Square150x150Logo.png, etc.)",
     "windows_organize": "Subcarpetas Assets/Taskbar, Assets/Tiles, Assets/StoreLogo"
-  }
-}
-,
-"common": {
-  "edit": "Editar",
-  "done": "Listo",
-  "hide": "Ocultar",
-  "expand": "Expandir"
-}
-,
-"settings_extra": {
-  "small_icon_profile_label": "Calidad de iconos pequeños (16/32)",
-  "small_icon_profile": {
-    "neutral": "Neutro",
-    "sharp": "Nítido",
-    "soft": "Suave",
-    "neutral_hint": "Predeterminado. Balanceado, sin realce extra.",
-    "sharp_hint": "Realza bordes/contraste. Para logos gruesos.",
-    "soft_hint": "Atenúa y preserva trazos finos. Para logos delicados."
+  },
+  "common": {
+    "edit": "Editar",
+    "done": "Listo",
+    "hide": "Ocultar",
+    "expand": "Expandir"
   }
 }

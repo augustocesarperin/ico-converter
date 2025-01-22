@@ -12,7 +12,7 @@
     },
     "resolutions": {
       "title": "Multiple Resolutions",
-      "description": "Automatically generates 16x16, 32x32, 48x48, and 64x64 pixels"
+      "description": "Multi‑size 16–256 px."
     },
     "download": {
       "title": "Instant Download",
@@ -33,7 +33,7 @@
   },
   "about": {
     "title": "About",
-    "description": "IcoSmith is a tool that turns PNG, JPG/JPEG, SVG, WebP, GIF/APNG (first frame), AVIF, BMP and ICO into .ICO.",
+    "description": "IcoSmith is a tool to generate .ICO from PNG, JPG/JPEG, SVG, WebP, AVIF and BMP. Everything runs in your browser.",
     "free": {
       "title": "100% Free",
       "description": "Forever free. No accounts. No tricks."
@@ -232,20 +232,11 @@
       "include_png": "Include individual PNG files in .zip",
       "include_webp": "Include WebP format (experimental)",
       "windows_assets": "Windows (assets)"
-    }
-  },
-  "tabs": { "windows": "Windows" },
-  "windows": {
-    "info": "Windows taskbar and Store assets are included when enabled in options.",
-    "download_assets_only": "Download Windows assets only"
-  },
-  "common": {
-    "edit": "Edit",
-    "done": "Done",
-    "hide": "Hide",
-    "expand": "Expand"
-  },
-  "settings": {
+    },
+    "pwa_section_label": "PWA/Manifest",
+    "pwa_name": "App name",
+    "windows_highfidelity": "High fidelity (use best source per size)",
+    "reset_defaults": "Restore defaults",
     "small_icon_profile_label": "Small icons quality (16/32)",
     "small_icon_profile": {
       "neutral": "Neutral",
@@ -255,6 +246,22 @@
       "sharp_hint": "Boost edges/contrast. Good for bold logos.",
       "soft_hint": "Soften and preserve thin strokes. Good for fine logos."
     }
+  },
+  "hero.advanced": "Advanced Options",
+  "tabs": { "windows": "Windows" },
+  "windows": {
+    "info": "Windows taskbar and Store assets are included when enabled in options.",
+    "download_assets_only": "Download Windows assets only",
+    "advanced": "Advanced (Windows)",
+    "profile_min": "Minimal",
+    "profile_rec": "Recommended",
+    "profile_full": "Complete"
+  },
+  "common": {
+    "edit": "Edit",
+    "done": "Done",
+    "hide": "Hide",
+    "expand": "Expand"
   },
   "hints": {
     "small_icons": {

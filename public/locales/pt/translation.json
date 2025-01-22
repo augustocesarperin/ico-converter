@@ -4,7 +4,7 @@
     "subtitle": "Gerador completo de ícones: ICO/PNG/WebP, PWA e assets do Windows",
     "png_to_ico": {
       "title": "Conversor PNG/JPG/SVG para ICO",
-      "description": "Multi‑tamanho 16–256 px."
+      "description": "ICO multi‑resolução 16–256 px."
     },
     "privacy": {
       "title": "Privado",
@@ -19,8 +19,8 @@
       "description": "Baixe ICO, pacote e assets do Windows."
     },
     "windows_assets": {
-      "title": "Windows Store assets",
-      "description": "targetsize 16–96 (inclui 20/24), tiles e StoreLogo; com unplated e nomes canônicos."
+      "title": "Assets da Windows Store",
+      "description": "Targetsize 16–96 (incl. 20/24); Tiles e StoreLogo; versões unplated; nomes canônicos do Visual Studio."
     },
     "pwa_ready": {
       "title": "PWA pronto",
@@ -28,7 +28,7 @@
     },
     "organized_zip": {
       "title": "ZIP organizado",
-      "description": "Assets/Taskbar, Assets/Tiles e Assets/StoreLogo."
+      "description": "ZIP organizado por pastas: Assets/Taskbar, Assets/Tiles e Assets/StoreLogo."
     }
   },
   "about": {
@@ -68,8 +68,8 @@
   },
   "hero": {
     "title": "IcoSmith",
-    "description": "Gerador e conversor de favicon: PNG/JPG/SVG → ICO (16–256), pacote PWA (manifest + apple‑touch‑icon) e assets do Windows Store (taskbar/tiles/StoreLogo).",
-    "formats": "Suporta: PNG, JPG/JPEG, SVG, WebP, AVIF e BMP.",
+    "description": "Gerador e conversor de favicon: PNG/JPG/SVG → ICO (16–256), pacote PWA (manifest + apple‑touch‑icon) e assets da Windows Store (taskbar/tiles/StoreLogo).",
+    "formats": "Suporta: PNG, JPG/JPEG, SVG, WebP, AVIF, BMP, GIF/APNG (primeiro quadro) e ICO.",
     "features": {
       "free": "Sem limites",
       "private": "Processamento local",
@@ -78,7 +78,7 @@
     "upload": {
       "title": "Arraste sua imagem aqui",
       "subtitle": "ou clique para selecionar",
-      "constraints": "PNG, JPG/JPEG, SVG, WebP, AVIF e BMP",
+      "constraints": "PNG, JPG/JPEG, SVG, WebP, AVIF, BMP, GIF/APNG (1º quadro) e ICO",
       "aria_label": "Selecionar arquivo de imagem",
       "preview": "Pré-visualização"
     },
@@ -233,6 +233,9 @@
       "include_webp": "Incluir formato WebP (experimental)",
       "windows_assets": "Windows (assets)"
     },
+    "pwa_section_label": "PWA/Manifest",
+    "pwa_name": "Nome do app",
+    "windows_highfidelity": "Alta fidelidade (usar melhor fonte para cada tamanho)",
     "reset_defaults": "Restaurar padrão",
     "small_icon_profile_label": "Qualidade dos ícones pequenos (16/32)",
     "small_icon_profile": {
@@ -244,14 +247,15 @@
       "soft_hint": "Atenua e preserva traços finos. Bom para logos finas."
     }
   },
+  "hero.advanced": "Opções Avançadas",
   "tabs": { "windows": "Windows" },
   "windows": {
     "info": "Assets de taskbar e Store do Windows são incluídos quando ativados nas opções.",
     "download_assets_only": "Baixar apenas assets do Windows",
     "advanced": "Avançado (Windows)",
-    "profile_min": "Minimal",
-    "profile_rec": "Recommended",
-    "profile_full": "Complete"
+    "profile_min": "Mínimo",
+    "profile_rec": "Recomendado",
+    "profile_full": "Completo"
   },
   "hints": {
     "small_icons": {
