@@ -1,9 +1,8 @@
-
-
-Convert images to (arguably) high‑quality .ICO and complete favicon/app icon packages. Everything client‑side.
+<br>
 
 **[🌐 icosmith.com](https://icosmith.com)**
 
+Convert images to (arguably) high‑quality .ICO and complete favicon/app icon packages
 
 - Input formats: PNG, JPG/JPEG, SVG, WebP, AVIF, BMP, GIF/APNG (first frame), ICO
 - Outputs:
@@ -11,16 +10,15 @@ Convert images to (arguably) high‑quality .ICO and complete favicon/app icon p
   - PNG/WebP exports for web
   - Windows assets
   - StoreLogo (scale 100–400)
-  - Can choose what to export (ICO, PNG/WebP, Windows assets) via presets (Website/PWA/Windows) or manual selection
+  
+  Can select what export via presets (Website/PWA/Windows) or manual selection
 
 
 ## Development
 ```bash
 npm install
 npm run dev       
-npm run build     
-
+npm run build 
+npm run test    
 ```
 
-## Notes
-- Everything runs client‑side.

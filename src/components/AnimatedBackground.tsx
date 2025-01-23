@@ -10,6 +10,13 @@ const AnimatedBackground: React.FC = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Expose background canvas so cards can sample it for reflections
+    try {
+      (window as any).__ICOSMITH_BG_CANVAS__ = canvas;
+    } catch {
+      // no-op
+    }
+
     let particles: Particle[];
     let animationFrameId: number;
     let grid: { [key: string]: Particle[] };
@@ -187,6 +194,13 @@ const AnimatedBackground: React.FC = () => {
     return () => {
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(animationFrameId);
+      try {
+        if ((window as any).__ICOSMITH_BG_CANVAS__ === canvas) {
+          delete (window as any).__ICOSMITH_BG_CANVAS__;
+        }
+      } catch {
+        // no-op
+      }
     };
   }, []);
 

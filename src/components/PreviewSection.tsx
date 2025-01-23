@@ -86,6 +86,14 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
   const hasPackage =
     processedImage.faviconPackage && processedImage.faviconPackage.zipBlob;
 
+  const getHtmlSnippet = (): string => {
+    if (processedImage.faviconPackage?.htmlCode) {
+      return processedImage.faviconPackage.htmlCode;
+    }
+    const base = processedImage.faviconPackage?.filename || "favicon";
+    return `<link rel="icon" href="/${base}.ico" sizes="any">`;
+  };
+
   const sizeCategories = {
     small: processedImage.resolutions.filter((r) => r.size <= 32),
     medium: processedImage.resolutions.filter(
@@ -220,6 +228,23 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
                   size: formatFileSize(processedImage.icoBlob.size),
                 })}
               </MotionButton>
+              <MotionButton
+                variant="outline"
+                size="default"
+                onClick={() => {
+                  const html = getHtmlSnippet();
+                  navigator.clipboard.writeText(html).then(() => {
+                    toast({ title: t("preview.details.copied_toast") });
+                  });
+                }}
+                className="group h-10 min-w-[160px] rounded-lg border border-white/20 bg-transparent px-4 py-2 font-semibold text-foreground/80 transition-all duration-300 hover:border-orange-400 hover:bg-orange-500/5 hover:text-orange-200"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98, y: 2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <Copy className="mr-2 h-4 w-4" />
+                {t("preview.details.copy_button")}
+              </MotionButton>
             </>
           ) : (
             <MotionButton
@@ -234,6 +259,25 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
               {t("preview.download.ico_button_simple", {
                 size: formatFileSize(processedImage.icoBlob.size),
               })}
+            </MotionButton>
+          )}
+          {!hasPackage && (
+            <MotionButton
+              variant="outline"
+              size="default"
+              onClick={() => {
+                const html = getHtmlSnippet();
+                navigator.clipboard.writeText(html).then(() => {
+                  toast({ title: t("preview.details.copied_toast") });
+                });
+              }}
+              className="group h-10 min-w-[160px] rounded-lg border border-white/20 bg-transparent px-4 py-2 font-semibold text-foreground/80 transition-all duration-300 hover:border-orange-400 hover:bg-orange-500/5 hover:text-orange-200"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98, y: 2 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
+              <Copy className="mr-2 h-4 w-4" />
+              {t("preview.details.copy_button")}
             </MotionButton>
           )}
         </div>
@@ -284,6 +328,15 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
                           ? "bg-orange-500/20 text-orange-400 shadow-lg"
                           : "text-muted-foreground hover:bg-white/5 hover:text-white"
                       }`}
+                      role="button"
+                      aria-pressed={previewMode === mode}
+                      aria-label={label}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setPreviewMode(mode as "light" | "dark");
+                        }
+                      }}
                     >
                       <Icon className="h-4 w-4" />
                       {label}
@@ -324,6 +377,16 @@ const PreviewSection = ({ processedImage }: PreviewSectionProps) => {
                             }
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
+                            role="button"
+                            tabIndex={0}
+                            aria-pressed={isSelected}
+                            aria-label={`${size}x${size}`}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                setSelectedSize(isSelected ? null : size);
+                              }
+                            }}
                           >
                             <div className="min-h-[210px] rounded-lg border border-white/10 bg-black/40 p-4 transition-all duration-300 hover:border-orange-500/50 group-hover:shadow-lg group-hover:shadow-orange-500/10">
                               <div className="mb-3 aspect-square overflow-hidden rounded-md border border-white/10 bg-gradient-to-br from-white/5 to-transparent">
