@@ -24,3 +24,7 @@ describe("favicon head snippet (format contract)", () => {
 
 
 
+
+
+
+

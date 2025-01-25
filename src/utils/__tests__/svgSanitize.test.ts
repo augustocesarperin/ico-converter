@@ -25,3 +25,7 @@ describe("sanitizeSvgText", () => {
 
 
 
+
+
+
+

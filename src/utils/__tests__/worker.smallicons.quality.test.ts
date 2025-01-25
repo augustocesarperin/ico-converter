@@ -22,6 +22,17 @@ const coverageOf = (pngBlob: Blob, size: number) => new Promise<number>(async (r
 
 describe('Small icons quality', () => {
   it.skip('16/32 coverage should not be too baixo (auto-fallback ajuda)', async () => {
+    const OriginalImage = (globalThis as any).Image
+    class MockImage {
+      onload: (() => void) | null = null
+      width = 512
+      height = 512
+      set src(_v: string) {
+        // Simula carregamento assíncrono em jsdom
+        setTimeout(() => this.onload && this.onload(), 0)
+      }
+    }
+    ;(globalThis as any).Image = MockImage as any
     const file = new File([new Blob([svgThin], { type: 'image/svg+xml' })], 'thin.svg', { type: 'image/svg+xml' })
     const res = await generateIcoFromImage(file as File, [16,32,48], () => {}, {
       preserveAspectRatio: true,
@@ -38,7 +49,8 @@ describe('Small icons quality', () => {
     const c32 = await coverageOf(b32, 32)
     expect(c16).toBeGreaterThanOrEqual(0.12)
     expect(c32).toBeGreaterThanOrEqual(0.18)
-  })
+    ;(globalThis as any).Image = OriginalImage
+  }, 45000)
 })
 
 
