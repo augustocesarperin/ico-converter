@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="index,follow,max-image-preview:large">
   <title>Pestaña fijada de Safari (mask-icon) | IcoSmith</title>
   <meta name="description" content="Crea un icono de pestaña fijada (mask-icon) para Safari. Usa un SVG monocromático y define el color.">
   <link rel="canonical" href="https://icosmith.com/es/safari-pinned-tab/">
@@ -10,6 +11,67 @@
   <link rel="alternate" hreflang="pt-BR" href="https://icosmith.com/pt/safari-pinned-tab/">
   <link rel="alternate" hreflang="es" href="https://icosmith.com/es/safari-pinned-tab/">
   <link rel="alternate" hreflang="x-default" href="https://icosmith.com/safari-pinned-tab/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="IcoSmith">
+  <meta property="og:title" content="Pestaña fijada de Safari (mask-icon) | IcoSmith">
+  <meta property="og:description" content="Crea un icono de pestaña fijada (mask-icon) y añádelo al head del sitio.">
+  <meta property="og:url" content="https://icosmith.com/es/safari-pinned-tab/">
+  <meta property="og:image" content="https://icosmith.com/og-icosmith-1200x630.png">
+  <meta property="og:image:alt" content="IcoSmith – guía de pestaña fijada de Safari (mask-icon)">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:locale:alternate" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pestaña fijada de Safari (mask-icon) | IcoSmith">
+  <meta name="twitter:description" content="Crea un icono de pestaña fijada (mask-icon) y añádelo al head del sitio.">
+  <meta name="twitter:image" content="https://icosmith.com/og-icosmith-1200x630.png">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://icosmith.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Pestaña fijada de Safari", "item": "https://icosmith.com/es/safari-pinned-tab/"}
+      ]
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "Añadir un icono de pestaña fijada de Safari (mask-icon)",
+      "description": "Crea un icono de pestaña fijada (mask-icon) y añádelo al head del sitio.",
+      "step": [
+        {"@type": "HowToStep", "name": "Generar paquete de favicon", "text": "Genera el paquete (ICO + PNGs). Prepara un SVG monocromático simple para Safari."},
+        {"@type": "HowToStep", "name": "Colocar SVG", "text": "Coloca safari-pinned-tab.svg en /public."},
+        {"@type": "HowToStep", "name": "Añadir etiqueta link", "text": "Añade <link rel=\"mask-icon\" href=\"/safari-pinned-tab.svg\" color=\"#0f172a\"> al <head>."}
+      ]
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Cómo añadir un icono de pestaña fijada de Safari (mask-icon)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Incluye <link rel=\"mask-icon\" href=\"/safari-pinned-tab.svg\" color=\"#0f172a\"> dentro del <head>. Usa un SVG monocromo y elige el color del mask-icon."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué SVG funciona mejor para mask-icon?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Prefiere relleno de un solo color (sin trazos/degradados) y márgenes para que no se recorte a 16–32 px."
+          }
+        }
+      ]
+    }
+  </script>
   <style>
     :root{color-scheme:dark light}
     body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0a0f1e;color:#e5e7eb}
@@ -24,8 +86,8 @@
 <body>
   <div class="wrap">
     <p><a class="cta" href="/">Abrir convertidor</a></p>
-    <h1>Pestaña fijada de Safari (mask-icon)</h1>
-    <p>Usa un SVG monocromático como tu <code>mask-icon</code> y define el color deseado. IcoSmith puede exportar ese SVG y el resto del paquete de favicon.</p>
+    <h1>Icono de pestaña fijada de Safari (mask-icon)</h1>
+    <p>Añade un icono de pestaña fijada con <code>link rel="mask-icon"</code>. Usa un SVG monocromo y elige el color de <em>mask-icon</em>. IcoSmith exporta el SVG y el paquete completo de favicon.</p>
     <div class="box">
       <h2>Cómo añadir</h2>
       <ol>
@@ -34,6 +96,13 @@
         <li>Añade esto a tu <code>&lt;head&gt;</code>:</li>
       </ol>
       <pre>&lt;link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0f172a"&gt;</pre>
+    </div>
+    <div class="box">
+      <h2>FAQ</h2>
+      <ul>
+        <li><strong>¿Cómo añadir un mask-icon?</strong> Inserta <code>&lt;link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0f172a"&gt;</code> dentro del <code>&lt;head&gt;</code>.</li>
+        <li><strong>¿Qué SVG usar?</strong> Un SVG monocromo, sin trazos/degradados y con márgenes para no recortar a 16–32 px.</li>
+      </ul>
     </div>
     <div class="box">
       <h2>Consejos</h2>

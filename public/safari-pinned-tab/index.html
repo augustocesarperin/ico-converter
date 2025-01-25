@@ -3,11 +3,75 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="index,follow,max-image-preview:large">
   <title>Safari Pinned Tab Icon (mask-icon) | IcoSmith</title>
-  <meta name="description" content="Create a Safari pinned tab icon (mask-icon) and add it to your site's <head>. Use a monochrome SVG and set a color.">
-  <link rel="canonical" href="/safari-pinned-tab/">
-  <link rel="alternate" hreflang="x-default" href="/safari-pinned-tab/">
-  <link rel="alternate" hreflang="pt" href="/pt/safari-pinned-tab/">
+  <meta name="description" content="Create a Safari pinned tab icon (mask-icon) from a monochrome SVG and add it to your site's head. Step-by-step guide with tips.">
+  <link rel="canonical" href="https://icosmith.com/safari-pinned-tab/">
+  <link rel="alternate" hreflang="en" href="https://icosmith.com/safari-pinned-tab/">
+  <link rel="alternate" hreflang="pt-BR" href="https://icosmith.com/pt/safari-pinned-tab/">
+  <link rel="alternate" hreflang="es" href="https://icosmith.com/es/safari-pinned-tab/">
+  <link rel="alternate" hreflang="x-default" href="https://icosmith.com/safari-pinned-tab/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="IcoSmith">
+  <meta property="og:title" content="Safari Pinned Tab Icon (mask-icon) | IcoSmith">
+  <meta property="og:description" content="Create a Safari pinned tab icon (mask-icon) and add it to your site's head.">
+  <meta property="og:url" content="https://icosmith.com/safari-pinned-tab/">
+  <meta property="og:image" content="https://icosmith.com/og-icosmith-1200x630.png">
+  <meta property="og:image:alt" content="IcoSmith – Safari pinned tab (mask-icon) guide">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="pt_BR">
+  <meta property="og:locale:alternate" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Safari Pinned Tab Icon (mask-icon) | IcoSmith">
+  <meta name="twitter:description" content="Create a Safari pinned tab icon (mask-icon) and add it to your site's head.">
+  <meta name="twitter:image" content="https://icosmith.com/og-icosmith-1200x630.png">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://icosmith.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Safari pinned tab", "item": "https://icosmith.com/safari-pinned-tab/"}
+      ]
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I add a Safari pinned tab icon (mask-icon)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Add <link rel=\"mask-icon\" href=\"/safari-pinned-tab.svg\" color=\"#0f172a\"> inside your <head>. Use a monochrome SVG and pick a mask-icon color."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which SVG works best for mask-icon?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use a single-color fill (no strokes or gradients) and keep margins so it doesn’t clip at 16–32 px."
+          }
+        }
+      ]
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "Add a Safari pinned tab icon (mask-icon)",
+      "description": "Create a Safari pinned tab icon (mask-icon) and add it to your site's head.",
+      "step": [
+        {"@type": "HowToStep", "name": "Generate favicon set", "text": "Generate your favicon set (ICO + PNGs). Prepare a simple monochrome SVG for Safari."},
+        {"@type": "HowToStep", "name": "Place SVG", "text": "Place safari-pinned-tab.svg in /public."},
+        {"@type": "HowToStep", "name": "Add link tag", "text": "Add <link rel=\"mask-icon\" href=\"/safari-pinned-tab.svg\" color=\"#0f172a\"> to your <head>."}
+      ]
+    }
+  </script>
   <style>
     :root{color-scheme:dark light}
     body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0a0f1e;color:#e5e7eb}
@@ -22,8 +86,8 @@
 <body>
   <div class="wrap">
     <p><a class="cta" href="/">Open Converter</a></p>
-    <h1>Safari pinned tab (mask-icon)</h1>
-    <p>Use a monochrome SVG as your <code>mask-icon</code> and set the desired color. IcoSmith can export an SVG and the rest of your favicon set.</p>
+    <h1>Safari pinned tab icon (mask-icon)</h1>
+    <p>Add a Safari pinned tab icon with <code>link rel="mask-icon"</code>. Use a monochrome SVG and choose a <em>mask-icon</em> color. IcoSmith can export the SVG and your full favicon set.</p>
     <div class="box">
       <h2>How to add</h2>
       <ol>
@@ -32,6 +96,11 @@
         <li>Add this to your <code>&lt;head&gt;</code>:</li>
       </ol>
       <pre>&lt;link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0f172a"&gt;</pre>
+    </div>
+    <div class="box">
+      <h2>FAQ</h2>
+      <details><summary>How do I add a Safari pinned tab icon (mask-icon)?</summary><p>Add <code>&lt;link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0f172a"&gt;</code> inside your <code>&lt;head&gt;</code>.</p></details>
+      <details><summary>Which SVG works best for mask-icon?</summary><p>Prefer a single-color fill (no strokes/gradients) and keep margins so it doesn’t clip at 16–32 px.</p></details>
     </div>
     <div class="box">
       <h2>Tips</h2>
