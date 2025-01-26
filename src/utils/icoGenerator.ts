@@ -212,6 +212,21 @@ const imageDataToBlob = async (
   });
 };
 
+const blobToArrayBuffer = (blob: Blob): Promise<ArrayBuffer> => {
+  const anyBlob = blob as unknown as { arrayBuffer?: () => Promise<ArrayBuffer> };
+  if (typeof anyBlob.arrayBuffer === 'function') return anyBlob.arrayBuffer!();
+  return new Promise<ArrayBuffer>((resolve, reject) => {
+    try {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result as ArrayBuffer);
+      fr.onerror = () => reject(fr.error);
+      fr.readAsArrayBuffer(blob);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export interface IcoGenerationOptions {
   sizes: number[];
   quality?: number;
@@ -294,7 +309,7 @@ const memoryTracker = {
   add(item: HTMLCanvasElement | ImageData | Blob) {
     if (item instanceof HTMLCanvasElement) {
       this.canvases.add(item);
-    } else if (item instanceof ImageData) {
+    } else if (typeof ImageData !== 'undefined' && item instanceof ImageData) {
       this.imageData.add(item);
     } else if (item instanceof Blob) {
       this.blobs.add(item);
@@ -623,7 +638,7 @@ const generateIcoWithMemoryTracking = async (
     resizedImages.map(async ({ size, imageData }) => {
       const blob = await imageDataToBlob(imageData, 1.0);
       return {
-        buffer: await blob.arrayBuffer(),
+        buffer: await blobToArrayBuffer(blob),
         size,
       };
     }),

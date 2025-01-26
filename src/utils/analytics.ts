@@ -7,7 +7,8 @@ export type AnalyticsEventName =
   | "open_windows_tab"
   | "download_windows_assets_only"
   | "open_settings_after_result"
-  | "retry_conversion";
+  | "retry_conversion"
+  | "feature_card_click";
 
 export interface AnalyticsEventPayload {
   [key: string]: string | number | boolean | undefined;

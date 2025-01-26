@@ -19,10 +19,10 @@ const CodeGenerator = ({ faviconPackage }: CodeGeneratorProps) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   const { t } = useTranslation();
-  const [appName, setAppName] = useState("IcoSmith App");
-  const [themeColor, setThemeColor] = useState("#0A0F1E");
-  const [bgColor, setBgColor] = useState("#0A0F1E");
-  const [maskColor, setMaskColor] = useState("#0f172a");
+  const [appName, setAppName] = useState(faviconPackage.pwaName || "IcoSmith App");
+  const [themeColor, setThemeColor] = useState(faviconPackage.pwaThemeColor || "#0A0F1E");
+  const [bgColor, setBgColor] = useState(faviconPackage.pwaBackgroundColor || "#0A0F1E");
+  const [maskColor, setMaskColor] = useState(faviconPackage.pwaMaskIconColor || "#0f172a");
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -47,8 +47,10 @@ const CodeGenerator = ({ faviconPackage }: CodeGeneratorProps) => {
       '<link rel="manifest" href="/site.webmanifest">',
       `<link rel="mask-icon" href="/safari-pinned-tab.svg" color="${maskColor}">`,
       `<meta name="theme-color" content="${themeColor}">`,
+      `<meta name="application-name" content="${appName}">`,
+      `<meta name="apple-mobile-web-app-title" content="${appName}">`,
     ].join("\n");
-  }, [maskColor, themeColor]);
+  }, [maskColor, themeColor, appName]);
 
   const manifestJson = useMemo(() => {
     const json = {
