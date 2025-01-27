@@ -15,7 +15,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "i18n:check": "node scripts/i18n-check.mjs",
     "size": "npm run build && size-limit",
-    "postbuild": "node scripts/update-sitemap.mjs && node scripts/update-headers.mjs",
+    "postbuild": "node scripts/update-sitemap.mjs && node scripts/update-headers.mjs && node scripts/update-fetchpriority.mjs",
     "og": "node scripts/generate-og.mjs",
     "fix": "npm run lint:fix && npm run format",
     "check": "npm run lint && npm run typecheck && npm run i18n:check && npm run size",
